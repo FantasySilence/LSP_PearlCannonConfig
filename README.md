@@ -1,0 +1,2 @@
+# LSP_PearlCannonConfig
+LSP服务器主珍珠炮以及返程炮配置程序
