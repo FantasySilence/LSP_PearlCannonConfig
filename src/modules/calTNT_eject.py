@@ -36,7 +36,7 @@ class TNTConfigForEjection:
         direction, direc_matrix = Directions.judge(x_target, z_target)
 
         # ------ 计算TNT数量 ------ #
-        tick = 100
+        tick = 1
         preliminary_results = {}
         final_result = {}
         while tick <= 300:
@@ -60,7 +60,7 @@ class TNTConfigForEjection:
             ).map(lambda x: round(x)).to_numpy()
 
             # 将合适的解存入初步结果等待进一步调整
-            if x[0] <= settings["MAX_TNT"] and x[1] <= settings["MAX_TNT"]:
+            if 0 <= x[0] <= settings["MAX_TNT"] and 0 <= x[1] <= settings["MAX_TNT"]:
                 preliminary_results[tick] = x
         
             tick += 1
