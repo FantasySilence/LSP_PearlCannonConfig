@@ -7,6 +7,7 @@
 # @Descript: 这个模块用于实现珍珠轨迹的模拟    #
 # ========================================= #
 import json
+import numpy as np
 import pandas as pd
 from typing import Literal
 from src.common.const import *
@@ -21,8 +22,8 @@ class PearlPathTracing:
 
     @staticmethod
     def generate(
-        x_motion: float, y_motion: float, z_motion: float, max_ticks: int,
-        mode: Literal["flat", "eject"] = "flat"
+        tnt_num: np.ndarray, direction: Literal["east", "west", "north", "south"], 
+        max_ticks: int, mode: Literal["flat", "eject"] = "flat"
     ) -> pd.DataFrame:
         
         """
@@ -46,6 +47,28 @@ class PearlPathTracing:
         PearlLocation = [[0, x_init, y_init, z_init]]
         tick = 0
 
+        # ------ 生成方向矩阵 ------ #
+        if direction == "east":
+            direc_matrix = np.array([[1, 1], [-1, 1]])
+        if direction == "west":
+            direc_matrix = np.array([[-1, -1], [-1, 1]])
+        if direction == "north":
+            direc_matrix = np.array([[1, -1], [-1, -1]])
+        if direction == "south":
+            direc_matrix = np.array([[1, -1], [1, 1]])
+        
+        # ------ 计算三轴动量 ------ #
+        if mode.lower() == "flat":
+            motion = MOTION_FOR_FLAT_FIRE["XZ_MOTION"] * direc_matrix.dot(tnt_num)
+            x_motion, z_motion = motion[0], motion[1]
+            y_motion =  y_motion = MOTION_FOR_FLAT_FIRE["Y_MOTION"] *\
+                                sum(tnt_num) + MOTION_FOR_FLAT_FIRE["Y_INIT_MOTION"]
+        if mode.lower() == "eject":
+            motion = MOTION_FOR_EJECTIONS["XZ_MOTION"] * direc_matrix.dot(tnt_num)
+            x_motion, z_motion = motion[0], motion[1]
+            y_motion =  y_motion = MOTION_FOR_EJECTIONS["Y_MOTION"] *\
+                                sum(tnt_num) + MOTION_FOR_EJECTIONS["Y_INIT_MOTION"]
+            
         # ------ 计算珍珠途径位置 ------ #
         while tick < max_ticks:
             tick = tick + 1
