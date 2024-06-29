@@ -6,7 +6,7 @@
 
 ### 2. 配置算法
 
-详细的配置算法请看[这里](resources/Config.pdf)
+详细的配置算法请看[这里](resources/docs/Config.pdf)
 
 ### 技术栈
 
