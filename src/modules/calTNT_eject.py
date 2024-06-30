@@ -22,9 +22,13 @@ class TNTConfigForEjection:
     """
     
     @staticmethod
-    def config(x_target: int, z_target: int) -> tuple[str, pd.DataFrame]:
+    def config(
+        x_target: int, z_target: int, 
+        x_0: float, z_0: float, max_TNT: int=None
+    ) -> tuple[str, pd.DataFrame]:
 
         """
+        x0, z0：炮口初始位置
         x_target, z_target：目的地坐标
         """
         
@@ -33,7 +37,7 @@ class TNTConfigForEjection:
             settings = json.load(f)
 
         # ------ 判断方向 ------ #
-        direction, direc_matrix = Directions.judge(x_target, z_target)
+        direction, direc_matrix = Directions.judge(x_target, z_target,  x_0, z_0)
 
         # ------ 计算TNT数量 ------ #
         tick = 1
@@ -42,9 +46,9 @@ class TNTConfigForEjection:
         while tick <= 300:
 
             # 计算达到目的地所需动量
-            px = (x_target - settings["INIT_POSITION"]["X"]) / (100 * (1 - 0.99 ** tick))
+            px = (x_target - x_0) / (100 * (1 - 0.99 ** tick))
             py = (128 - MOTION_FOR_EJECTIONS["Y_INIT_POSITION"] + 3 * tick) / (100 * (1 - 0.99 ** tick)) - 3 
-            pz = (z_target - settings["INIT_POSITION"]["Z"]) / (100 * (1 - 0.99 ** tick))
+            pz = (z_target - z_0) / (100 * (1 - 0.99 ** tick))
 
             # 生成求解TNT数量的方程组
             P_xz = direc_matrix.dot(np.array([px, pz]))
@@ -60,8 +64,12 @@ class TNTConfigForEjection:
             ).map(lambda x: round(x)).to_numpy()
 
             # 将合适的解存入初步结果等待进一步调整
-            if 0 <= x[0] <= settings["MAX_TNT"] and 0 <= x[1] <= settings["MAX_TNT"]:
-                preliminary_results[tick] = x
+            if max_TNT is not None:
+                if 0 <= x[0] <= max_TNT and 0 <= x[1] <= max_TNT:
+                    preliminary_results[tick] = x
+            else:
+                if 0 <= x[0] <= settings["MAX_TNT"] and 0 <= x[1] <= settings["MAX_TNT"]:
+                    preliminary_results[tick] = x
         
             tick += 1
         
@@ -79,9 +87,9 @@ class TNTConfigForEjection:
                 y_motion = MOTION_FOR_EJECTIONS["Y_MOTION"] *\
                             sum(comb) + MOTION_FOR_EJECTIONS["Y_INIT_MOTION"]
                 # 计算落点
-                xt = settings["INIT_POSITION"]["X"] + 100 * motion[0] * (1 - 0.99 ** tick)
+                xt = x_0 + 100 * motion[0] * (1 - 0.99 ** tick)
                 yt = MOTION_FOR_EJECTIONS["Y_INIT_POSITION"] + 100 * (y_motion + 3) * (1 - 0.99 ** tick) - 3 * tick
-                zt = settings["INIT_POSITION"]["Z"] + 100 * motion[1] * (1 - 0.99 ** tick)
+                zt = z_0 + 100 * motion[1] * (1 - 0.99 ** tick)
 
                 # 计算误差
                 error = np.sqrt((xt - x_target) ** 2 + (zt - z_target) ** 2)

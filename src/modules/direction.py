@@ -6,9 +6,7 @@
 # ========================================= #
 # @Descript: 这个模块用于实现落点方向的判断    #
 # ========================================= #
-import json
 import numpy as np
-from src.common.filesio import FilesIO
 
 
 class Directions:
@@ -18,20 +16,19 @@ class Directions:
     """
 
     @staticmethod
-    def judge(x1: float, z1: float) -> tuple[str, np.ndarray]:
+    def judge(
+        x1: float, z1: float, x_0: float, z_0: float
+    ) -> tuple[str, np.ndarray]:
 
         """
         x1, z1: 目标位置
+        x_0, z_0: 炮口位置
         """
-
-        # ------ 读取设置 ------ #
-        with open(FilesIO.load_json("settings.json"), "r") as f:
-            settings = json.load(f)
 
         # ------ 平移坐标原点至炮口坐标 ------ #
         destination = np.array([
-            x1 - settings["INIT_POSITION"]["X"], 
-            z1 - settings["INIT_POSITION"]["Z"]
+            x1 - x_0, 
+            z1 - z_0
         ])
 
         # ------ 定义旋转矩阵，将目的地坐标顺时针旋转45度 ------ #
