@@ -108,11 +108,11 @@ class SettingsFrame(ttk.Frame):
         ) as file:
             settings = json.load(file)
             if self.x0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = self.x0_input.get()
+                settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
             if self.z0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = self.z0_input.get()
+                settings["INIT_POSITION"]["X"] = float(self.z0_input.get())
             if self.max_tnt_input.get() != '':
-                settings["MAX_TNT"] = self.max_tnt_input.get()
+                settings["MAX_TNT"] = int(self.max_tnt_input.get())
 
         # ------ 将修改后的设置进行保存 ------ #
         with open(
