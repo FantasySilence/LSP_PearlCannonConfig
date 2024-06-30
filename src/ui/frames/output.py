@@ -85,14 +85,14 @@ class OutputFrame(ttk.Frame):
         selected_item = self.treeview.focus()
         
         # ------ 获取该行的值 ------ #
-        item_values = self.treeview.item(selected_item, 'values')
+        self.item_values = self.treeview.item(selected_item, 'values')
 
         # ------ 获取选中行的索引 ------ #
         item_id = self.treeview.selection()[0]
         self.item_index = self.treeview.index(item_id)
 
         # ------ 更新TNT详细信息 ------ #
-        blue_TNT, red_TNT = item_values[2:4]
+        blue_TNT, red_TNT = self.item_values[2:4]
         blue_TNT_str, red_TNT_str = ConfigInfoTransform.translate(
             int(blue_TNT[:-2]), int(red_TNT[:-2])
         )
@@ -126,6 +126,16 @@ class OutputFrame(ttk.Frame):
             self.treeview_frame, columns=columns, show="headings"
         )
         self.treeview.pack(fill=BOTH, expand=YES)
+
+        # ------ 为表头配置函数，点击进行排序 ------ #
+        self.treeview.heading(
+            '距离偏移', text='距离偏移', 
+            command=lambda: self.sort_column('距离偏移')
+        )
+        self.treeview.heading(
+            '飞行时间', text='飞行时间', 
+            command=lambda: self.sort_column('飞行时间')
+        )
 
         # ------ 设置列格式，确保对齐等 ------ #
         for col in columns:
@@ -198,15 +208,16 @@ class OutputFrame(ttk.Frame):
         # ------ 清除Treeview中的旧数据 ------ #
         self.trace_treeview.delete(*self.trace_treeview.get_children())
 
-        # ------ 从配置结果中获取信息 ------ #
-        res = self.output_dataframe[
-            ['飞行时间', '蓝色TNT数量', '红色TNT数量']
-        ].iloc[self.item_index].to_numpy()
+        # ------ 从选中的结果中获取信息 ------ #
+        res = pd.Series(
+            self.item_values[1: 4], 
+            index=['飞行时间', '蓝色TNT数量', '红色TNT数量']
+        ).astype(float).to_numpy()
         
         # ------ 计算珍珠运行轨迹 ------ #
         trace_info = PearlPathTracing.generate(
             x0, z0, tnt_num=res[1:], direction=direction, 
-            max_ticks=res[0] + 50, mode=mode
+            max_ticks=int(res[0]) + 50, mode=mode
         )
         trace_info[["x", "y", "z"]] = np.round(trace_info[["x", "y", "z"]], 6)
 
@@ -219,7 +230,7 @@ class OutputFrame(ttk.Frame):
             )
         
         # ------ 将到达目的地的那一条高亮显示 ------ #
-        item_id_highlight = self.trace_treeview.get_children()[res[0]]
+        item_id_highlight = self.trace_treeview.get_children()[int(res[0])]
         self.trace_treeview.tag_configure("highlight", background="yellow")
         self.trace_treeview.item(item_id_highlight, tags=("highlight",))
         
@@ -233,4 +244,17 @@ class OutputFrame(ttk.Frame):
             self.scrollbar_trace.pack(side='right', fill='y')
             self.trace_treeview.configure(yscrollcommand=self.scrollbar_trace.set)
             self.scrollbar_trace = None
-    
+
+    def sort_column(self, col_id: str, reverse: bool=False) -> None:
+
+        """
+        排序
+        """
+
+        data = [
+            (float(self.treeview.set(child, col_id)), child) 
+            for child in self.treeview.get_children('')
+        ]
+        data.sort(reverse=reverse)
+        for index, (val, child) in enumerate(data):
+            self.treeview.move(child, '', index)
