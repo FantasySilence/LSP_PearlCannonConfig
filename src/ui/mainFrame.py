@@ -63,13 +63,12 @@ class MainFrame(ttk.Frame):
         self.main_frame.rowconfigure(0, weight=1)
         self.main_frame.grid_propagate(False)
         self.main_frame.pack(side=TOP, fill=BOTH, expand=YES)
-        # 向主容器中添加用户输入子容器
-        input_frame = InputFrame(self.main_frame, width=400, height=730)
-        input_frame.grid(row=0, column=0, sticky=NSEW)
         # 向主容器中添加结果显示子容器
         result_frame = OutputFrame(self.main_frame, width=800, height=730)
         result_frame.grid(row=0, column=1, sticky=NSEW)
-
+        # 向主容器中添加用户输入子容器
+        input_frame = InputFrame(self.main_frame, result_frame, width=400, height=730)
+        input_frame.grid(row=0, column=0, sticky=NSEW)
 
     @staticmethod
     def _show() -> None:
