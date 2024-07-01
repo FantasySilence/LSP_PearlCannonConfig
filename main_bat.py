@@ -6,9 +6,14 @@
 # =================================== #
 # @Descript: 这里是主程序入口的cmd版本  #
 # =================================== #
+import json
+from src.common.filesio import FilesIO
 from src.modules.pearltrace import PearlPathTracing
 from src.modules.calTNT_flat import TNTConfigForFlat
 from src.modules.calTNT_eject import TNTConfigForEjection
+
+with open(FilesIO.load_json("settings.json"), "r") as f:
+    settings = json.load(f)
 
 while True:
     print("输入目标地点的X坐标: ")
@@ -20,9 +25,15 @@ while True:
 
     # ------ 计算TNT数量 ------ #
     if mode.lower() == "f":
-        dir, res = TNTConfigForFlat.config(x, z)
+        dir, res = TNTConfigForFlat.config(
+            x, z, settings["INIT_POSITION"]["X"], settings["INIT_POSITION"]["Z"],
+            max_TNT=settings["MAX_TNT"]
+        )
     elif mode.lower() == "e":
-        dir, res = TNTConfigForEjection.config(x, z)
+        dir, res = TNTConfigForEjection.config(
+            x, z, settings["INIT_POSITION"]["X"], settings["INIT_POSITION"]["Z"],
+            max_TNT=settings["MAX_TNT"]
+        )
     else:
         print("Invalid mode selected.")
         exit()
@@ -42,13 +53,19 @@ while True:
     time = int(input())
     if mode.lower() == "f":
         tnt_num = res.loc[res["飞行时间"] == time, ["蓝色TNT数量", "红色TNT数量"]].values[0]
-        PearlLocation = PearlPathTracing.generate(tnt_num, dir, time, mode="flat")
+        PearlLocation = PearlPathTracing.generate(
+            settings["INIT_POSITION"]["X"], settings["INIT_POSITION"]["Z"],
+            tnt_num, dir, time, mode="flat"
+        )
         print("飞行时间\tX坐标\t\tY坐标\t\tZ坐标")
         for index, row in PearlLocation.iterrows():
             print("{}\t\t{:.6f}\t{:.6f}\t{:.6f}".format(row["time"], row["x"], row["y"], row["z"]))
     elif mode.lower() == "e":
         tnt_num = res.loc[res["飞行时间"] == time, ["蓝色TNT数量", "红色TNT数量"]].values[0]
-        PearlLocation = PearlPathTracing.generate(tnt_num, dir, time, mode="eject")
+        PearlLocation = PearlPathTracing.generate(
+            settings["INIT_POSITION"]["X"], settings["INIT_POSITION"]["Z"],
+            tnt_num, dir, time, mode="eject"
+        )
         print("飞行时间\tX坐标\t\tY坐标\t\tZ坐标")
         for index, row in PearlLocation.iterrows():
             print("{}\t\t{:.6f}\t{:.6f}\t{:.6f}".format(row["time"], row["x"], row["y"], row["z"]))
