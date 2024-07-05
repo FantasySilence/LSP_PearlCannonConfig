@@ -10,8 +10,8 @@ import json
 import numpy as np
 import pandas as pd
 from src.common.const import *
+from src.common.path_utils import *
 from src.modules.direction import Directions
-from src.common.path_utils import resource_path
 from src.modules.tuning import TNTNumberAdjustment
 
 
@@ -33,8 +33,7 @@ class TNTConfigForFlat:
         """
         
         # ------ 读取设置 ------ #
-        with open(resource_path("resources/settings/settings.json"), "r") as f:
-            settings = json.load(f)
+        settings = load_settings()
 
         # ------ 判断方向 ------ #
         direction, direc_matrix = Directions.judge(x_target, z_target, x_0, z_0)

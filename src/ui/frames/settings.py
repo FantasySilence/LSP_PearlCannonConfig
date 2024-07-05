@@ -12,7 +12,7 @@ import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
 from ttkbootstrap.constants import *
-from src.common.path_utils import resource_path
+from src.common.path_utils import *
 from src.common.input_validation import validate_number
 
 
@@ -103,22 +103,16 @@ class SettingsFrame(ttk.Frame):
         """
 
         # ------ 读取现有的设置并进行修改 ------ #
-        with open(
-            resource_path("resources/settings/settings.json"), mode="r"
-        ) as file:
-            settings = json.load(file)
-            if self.x0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
-            if self.z0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = float(self.z0_input.get())
-            if self.max_tnt_input.get() != '':
-                settings["MAX_TNT"] = int(self.max_tnt_input.get())
+        settings = load_settings()
+        if self.x0_input.get() != '':
+            settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
+        if self.z0_input.get() != '':
+            settings["INIT_POSITION"]["Z"] = float(self.z0_input.get())
+        if self.max_tnt_input.get() != '':
+            settings["MAX_TNT"] = int(self.max_tnt_input.get())
 
         # ------ 将修改后的设置进行保存 ------ #
-        with open(
-            resource_path("resources/settings/settings.json"), mode="w"
-        ) as files:    
-            json.dump(settings, files, indent=4)
+        save_settings(settings)
 
         # ------ 重启应用，设置生效 ------ #
         python = sys.executable
