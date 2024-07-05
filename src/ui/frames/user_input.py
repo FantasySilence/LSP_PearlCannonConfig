@@ -208,7 +208,7 @@ class InputFrame(ttk.Frame):
             master=self.button_page,
             text="退出",
             bootstyle=(DANGER, OUTLINE),
-            command=quit
+            command=self.quit
         )
         exit_button.grid(row=4, column=0, padx=5, pady=(10, 10), sticky=EW)
 
