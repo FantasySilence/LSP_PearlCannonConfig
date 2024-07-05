@@ -8,8 +8,8 @@
 # =================================== #
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from src.common.filesio import FilesIO
 from src.ui.frames.output import OutputFrame
+from src.common.path_utils import resource_path
 from src.ui.frames.user_input import InputFrame
 
 
@@ -33,7 +33,8 @@ class MainFrame(ttk.Frame):
         # ------ 加载图片 ------ #
         self.images = [
             ttk.PhotoImage(
-                name="logo", file=FilesIO.getFigPath("Ender_Pearl.png")
+                name="logo", 
+                file=resource_path("resources/images/Ender_Pearl.png")
             ),
         ]
 
@@ -72,7 +73,7 @@ class MainFrame(ttk.Frame):
 
     @staticmethod
     def _show() -> None:
-        root = ttk.Window(title="LSP_PearlConfig v3.0", size=(1200, 800))
+        root = ttk.Window(title="LSP_PearlConfig v3.1", size=(1200, 800))
         root.resizable(False, False)
         MainFrame(root)
         root.mainloop()

@@ -10,8 +10,8 @@ import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
 from ttkbootstrap.constants import *
-from src.common.filesio import FilesIO
 from src.ui.frames.output import OutputFrame
+from src.common.path_utils import resource_path
 from src.ui.frames.settings import SettingsFrame
 from src.modules.calTNT_flat import TNTConfigForFlat
 from src.common.input_validation import validate_number
@@ -23,7 +23,7 @@ class InputFrame(ttk.Frame):
     def __init__(self, master, res_page: OutputFrame, *args, **kwargs):
 
         # ------ 读取设置文件中的默认设置 ------ #
-        with open(FilesIO.load_json("settings.json"), "r") as f:
+        with open(resource_path("resources/settings/settings.json"), "r") as f:
             settings = json.load(f)
 
         # ------ 创建输入窗口的根容器 ------ #
