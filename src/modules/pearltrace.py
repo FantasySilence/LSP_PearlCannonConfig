@@ -22,7 +22,8 @@ class PearlPathTracing:
     def generate(
         x0: float, z0: float, tnt_num: np.ndarray, 
         direction: Literal["east", "west", "north", "south"], 
-        max_ticks: int, mode: Literal["flat", "eject"] = "flat"
+        max_ticks: int, mode: Literal["flat", "eject"] = "flat",
+        settings: dict = None
     ) -> pd.DataFrame:
         
         """
@@ -37,9 +38,9 @@ class PearlPathTracing:
         x = x_init = x0
         z = z_init = z0
         if mode == "flat":
-            y = y_init = MOTION_FOR_FLAT_FIRE["Y_INIT_POSITION"]
+            y = y_init = settings["MOTION_FOR_FLAT_FIRE"]["Y_INIT_POSITION"]
         if mode == "eject":
-            y = y_init = MOTION_FOR_EJECTIONS["Y_INIT_POSITION"]
+            y = y_init = settings["MOTION_FOR_EJECTIONS"]["Y_INIT_POSITION"]
 
         # ------ 初始化存储结果的列表 ------ #
         PearlLocation = [[0, x_init, y_init, z_init]]
@@ -57,15 +58,15 @@ class PearlPathTracing:
         
         # ------ 计算三轴动量 ------ #
         if mode.lower() == "flat":
-            motion = MOTION_FOR_FLAT_FIRE["XZ_MOTION"] * direc_matrix.dot(tnt_num)
+            motion = settings["MOTION_FOR_FLAT_FIRE"]["XZ_MOTION"] * direc_matrix.dot(tnt_num)
             x_motion, z_motion = motion[0], motion[1]
-            y_motion =  y_motion = MOTION_FOR_FLAT_FIRE["Y_MOTION"] *\
-                                sum(tnt_num) + MOTION_FOR_FLAT_FIRE["Y_INIT_MOTION"]
+            y_motion =  y_motion = settings["MOTION_FOR_FLAT_FIRE"]["Y_MOTION"] *\
+                                sum(tnt_num) + settings["MOTION_FOR_FLAT_FIRE"]["Y_INIT_MOTION"]
         if mode.lower() == "eject":
-            motion = MOTION_FOR_EJECTIONS["XZ_MOTION"] * direc_matrix.dot(tnt_num)
+            motion = settings["MOTION_FOR_EJECTIONS"]["XZ_MOTION"] * direc_matrix.dot(tnt_num)
             x_motion, z_motion = motion[0], motion[1]
-            y_motion =  y_motion = MOTION_FOR_EJECTIONS["Y_MOTION"] *\
-                                sum(tnt_num) + MOTION_FOR_EJECTIONS["Y_INIT_MOTION"]
+            y_motion =  y_motion = settings["MOTION_FOR_EJECTIONS"]["Y_MOTION"] *\
+                                sum(tnt_num) + settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]
             
         # ------ 计算珍珠途径位置 ------ #
         while tick < max_ticks:
