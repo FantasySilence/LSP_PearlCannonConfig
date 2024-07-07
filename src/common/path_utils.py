@@ -66,3 +66,16 @@ def save_settings(settings) -> None:
     config_path = get_config_path()
     with open(config_path, 'w') as f:
         json.dump(settings, f, indent=4)
+
+def get_executable_path() -> str:
+
+    """
+    获取可执行文件的目录
+    """
+
+    if getattr(sys, 'frozen', False):
+        # 打包后的可执行文件
+        return os.path.dirname(sys.executable)
+    else:
+        # 未打包的脚本文件
+        return os.path.dirname(os.path.abspath(__file__))
