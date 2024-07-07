@@ -146,21 +146,17 @@ class SettingsFrame(ttk.Frame):
         if not file_path:
             return
 
-        # # ------ 将导入的文件内容写入应用的设置文件中 ------ #
-        # try:
-        #     with open(file_path, mode="r") as file:
-        #         settings = json.load(file)
-        #         with open(
-        #             FilesIO.load_json("settings.json"), mode="w"
-        #         ) as files:
-        #             json.dump(settings, files, indent=4)
+        # ------ 将导入的文件内容写入应用的设置文件中 ------ #
+        try:
+            with open(file_path, mode="r") as file:
+                settings = json.load(file)
+            save_settings(settings)
             
-        #     # ------ 重启应用，设置生效 ------ #
-        #     python = sys.executable
-        #     os.execl(python, python, *sys.argv)
+            # ------ 重启应用，设置生效 ------ #
+            python = sys.executable
+            os.execl(python, python, *sys.argv)
 
-        # except Exception as e:
-        #     print(file_path)
-        #     messagebox.showerror("Error", f"Failed to import settings: {e}")
-
+        except Exception as e:
+            print(file_path)
+            messagebox.showerror("Error", f"Failed to import settings: {e}")
         
