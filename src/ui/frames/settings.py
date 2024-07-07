@@ -11,7 +11,9 @@ import sys
 import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
+from tkinter import messagebox
 from ttkbootstrap.constants import *
+from tkinter.filedialog import askopenfilename
 from src.common.filesio import FilesIO
 from src.common.input_validation import validate_number
 
@@ -96,6 +98,18 @@ class SettingsFrame(ttk.Frame):
             row=3, column=0, padx=5, pady=5, sticky=EW, columnspan=2
         )
 
+        # ------ 导入设置文件按钮 ------ #
+        upload_button = ttk.Button(
+            master=self.frame,
+            text="导入设置",
+            command=self.upload_button,
+            bootstyle=(INFO, LIGHT),
+        )
+        upload_button.grid(
+            row=4, column=0, padx=5, pady=5, sticky=EW, columnspan=2
+        )
+
+
     def apply_settings(self) -> None:
 
         """
@@ -110,7 +124,7 @@ class SettingsFrame(ttk.Frame):
             if self.x0_input.get() != '':
                 settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
             if self.z0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = float(self.z0_input.get())
+                settings["INIT_POSITION"]["Z"] = float(self.z0_input.get())
             if self.max_tnt_input.get() != '':
                 settings["MAX_TNT"] = int(self.max_tnt_input.get())
 
@@ -123,3 +137,36 @@ class SettingsFrame(ttk.Frame):
         # ------ 重启应用，设置生效 ------ #
         python = sys.executable
         os.execl(python, python, *sys.argv)
+
+    def upload_button(self) -> None:
+
+        """
+        导入设置
+        """
+
+        # ------ 导入文件窗口 ------ #
+        file_path = askopenfilename(
+            title="导入设置",
+            filetypes=[("JSON files", "*.json")]
+        )
+        if not file_path:
+            return
+
+        # ------ 将导入的文件内容写入应用的设置文件中 ------ #
+        try:
+            with open(file_path, mode="r") as file:
+                settings = json.load(file)
+                with open(
+                    FilesIO.load_json("settings.json"), mode="w"
+                ) as files:
+                    json.dump(settings, files, indent=4)
+            
+            # ------ 重启应用，设置生效 ------ #
+            python = sys.executable
+            os.execl(python, python, *sys.argv)
+
+        except Exception as e:
+            print(file_path)
+            messagebox.showerror("Error", f"Failed to import settings: {e}")
+
+        

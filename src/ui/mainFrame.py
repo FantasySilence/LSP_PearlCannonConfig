@@ -50,7 +50,7 @@ class MainFrame(ttk.Frame):
         # 向标题子容器中添加标题文字
         logo_text = ttk.Label(
             master=hdr_frame,
-            text='LSP Hub主炮及返程炮配置器',
+            text='LSP Hub通用珍珠炮配置器',
             font=('TkDefaultFixed', 30),
             bootstyle=(INVERSE, INFO)
         )
