@@ -72,7 +72,7 @@ class MainFrame(ttk.Frame):
 
     @staticmethod
     def _show() -> None:
-        root = ttk.Window(title="LSP_PearlConfig v3.2", size=(1200, 800))
+        root = ttk.Window(title="LSP_PearlConfig v4.0", size=(1200, 800))
         MainFrame(root)
         root.mainloop()
 
