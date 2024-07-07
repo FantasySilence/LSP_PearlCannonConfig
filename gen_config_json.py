@@ -9,6 +9,7 @@
 import os
 import json
 from typing import Type, TypeVar
+from src.common.path_utils import get_executable_path
 
 
 # ------ 写在前面的信息 ------ #
@@ -64,9 +65,11 @@ print("请输入您的珍珠炮是否具有抛射的功能(Y/N)：")
 is_eject = input()
 
 # ------ 第二层次 ------ #
+print()
 print("接下来请为您的珍珠炮配置0个TNT，并在MC中输入指令 /log projectiles full ")
 print("珍珠落地后，找到开炮的时刻，读取log信息...")
 if is_eject.lower() == "y":
+    print("-------------------------------------------------------------------")
     print("首先将珍珠炮设置为平射模式，丢出珍珠...")
     print("请输入炮口的Y坐标：")
     y_init_f = get_user_input()
@@ -81,6 +84,8 @@ if is_eject.lower() == "y":
     print("请输入1个TNT配置下珍珠的Y轴动量大小：")
     y1_motion_f = get_user_input()
     y_motion_f = y1_motion_f - y_init_motion_f
+    print("-------------------------------------------------------------------")
+    print()
 
     print("然后将珍珠炮设置为抛射模式并配置0个TNT...")
     print("请输入炮口的Y坐标：")
@@ -96,8 +101,11 @@ if is_eject.lower() == "y":
     print("请输入1个TNT配置下珍珠的Y轴动量大小：")
     y1_motion_e = get_user_input()
     y_motion_e = y1_motion_e - y_init_motion_e
+    print("-------------------------------------------------------------------")
+    print()
 
 else:
+    print("-------------------------------------------------------------------")
     print("请输入炮口的Y坐标：")
     y_init_f = get_user_input()
 
@@ -111,6 +119,8 @@ else:
     print("请输入1个TNT配置下珍珠的Y轴动量大小：")
     y1_motion_f = get_user_input()
     y_motion_f = y1_motion_f - y_init_motion_f
+    print("-------------------------------------------------------------------")
+    print()
 
 # ------ 第三层次 ------ #
 print("请为您的珍珠炮配置文件命名：")
@@ -140,11 +150,11 @@ if is_eject.lower() == "y":
         }
     }
 
-    # ------ 写入JSON文件 ------ #
-    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
-    with open(os.path.join(desktop_path, config_name), "w") as f:
+    # ------ 写入JSON文件并保存 ------ #
+    exe_dir = get_executable_path()
+    json_path = os.path.join(exe_dir, config_name)
+    with open(json_path, "w") as f:
         json.dump(settings, f, indent=4)
-    print("配置文件已保存至桌面%s" % os.path.join(desktop_path, config_name))
 
 else:
     
@@ -165,8 +175,8 @@ else:
         }
     }
 
-    # ------ 写入JSON文件 ------ #
-    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
-    with open(os.path.join(desktop_path, config_name), "w") as f:
+    # ------ 写入JSON文件并保存 ------ #
+    exe_dir = get_executable_path()
+    json_path = os.path.join(exe_dir, config_name)
+    with open(json_path, "w") as f:
         json.dump(settings, f, indent=4)
-    print("配置文件已保存至桌面%s" % os.path.join(desktop_path, config_name))
