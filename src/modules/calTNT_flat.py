@@ -10,7 +10,6 @@ import json
 import numpy as np
 import pandas as pd
 from src.common.const import *
-from src.common.path_utils import *
 from src.modules.direction import Directions
 from src.modules.tuning import TNTNumberAdjustment
 
@@ -24,7 +23,7 @@ class TNTConfigForFlat:
     @staticmethod
     def config(
         x_target: int, z_target: int, 
-        x_0: float, z_0: float, max_TNT: int=None
+        x_0: float, z_0: float, max_TNT: int=None, settings: dict=None
     ) -> tuple[str, pd.DataFrame]:
 
         """
@@ -32,9 +31,6 @@ class TNTConfigForFlat:
         x_target, z_target：目的地坐标
         """
         
-        # ------ 读取设置 ------ #
-        settings = load_settings()
-
         # ------ 判断方向 ------ #
         direction, direc_matrix = Directions.judge(x_target, z_target, x_0, z_0)
 
@@ -52,7 +48,9 @@ class TNTConfigForFlat:
 
             # 求解
             x = pd.Series(
-                np.linalg.solve(MOTION_FOR_FLAT_FIRE["XZ_MOTION"] * direc_matrix, b)
+                np.linalg.solve(
+                    settings["MOTION_FOR_FLAT_FIRE"]["XZ_MOTION"] * direc_matrix, b
+                )
             ).map(lambda x: round(x)).to_numpy()
 
             # 将合适的解存入初步结果等待进一步调整
@@ -76,7 +74,7 @@ class TNTConfigForFlat:
             for comb in tuning_range:
 
                 # 计算XZ轴动量
-                motion = MOTION_FOR_FLAT_FIRE["XZ_MOTION"] * direc_matrix.dot(comb)
+                motion = settings["MOTION_FOR_FLAT_FIRE"]["XZ_MOTION"] * direc_matrix.dot(comb)
                 
                 # 计算落点
                 xt = x_0 + 100 * motion[0] * (1 - 0.99 ** tick)

@@ -10,7 +10,6 @@ import json
 import numpy as np
 import pandas as pd
 from src.common.const import *
-from src.common.path_utils import *
 from src.modules.direction import Directions
 from src.modules.tuning import TNTNumberAdjustment
 
@@ -24,7 +23,7 @@ class TNTConfigForEjection:
     @staticmethod
     def config(
         x_target: int, z_target: int, 
-        x_0: float, z_0: float, max_TNT: int=None
+        x_0: float, z_0: float, max_TNT: int=None, settings: dict=None
     ) -> tuple[str, pd.DataFrame]:
 
         """
@@ -32,9 +31,6 @@ class TNTConfigForEjection:
         x_target, z_target：目的地坐标
         """
         
-        # ------ 读取设置 ------ #
-        settings = load_settings()
-
         # ------ 判断方向 ------ #
         direction, direc_matrix = Directions.judge(x_target, z_target,  x_0, z_0)
 
@@ -46,14 +42,14 @@ class TNTConfigForEjection:
 
             # 计算达到目的地所需动量
             px = (x_target - x_0) / (100 * (1 - 0.99 ** tick))
-            py = (128 - MOTION_FOR_EJECTIONS["Y_INIT_POSITION"] + 3 * tick) / (100 * (1 - 0.99 ** tick)) - 3 
+            py = (128 - settings["MOTION_FOR_EJECTIONS"]["Y_INIT_POSITION"] + 3 * tick) / (100 * (1 - 0.99 ** tick)) - 3 
             pz = (z_target - z_0) / (100 * (1 - 0.99 ** tick))
 
             # 生成求解TNT数量的方程组
             P_xz = direc_matrix.dot(np.array([px, pz]))
             coefs = np.array([[1, 1], P_xz])
             consts = np.array([
-                (py - MOTION_FOR_EJECTIONS["Y_INIT_MOTION"]) / MOTION_FOR_EJECTIONS["Y_MOTION"],
+                (py - settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]) / settings["MOTION_FOR_EJECTIONS"]["Y_MOTION"],
                 0
             ])
 
@@ -82,9 +78,9 @@ class TNTConfigForEjection:
             # 每个组合计算误差取最小
             for comb in tuning_range:
                 # 计算XYZ轴动量
-                motion = MOTION_FOR_EJECTIONS["XZ_MOTION"] * direc_matrix.dot(comb)
-                y_motion = MOTION_FOR_EJECTIONS["Y_MOTION"] *\
-                            sum(comb) + MOTION_FOR_EJECTIONS["Y_INIT_MOTION"]
+                motion = settings["MOTION_FOR_EJECTIONS"]["XZ_MOTION"] * direc_matrix.dot(comb)
+                y_motion = settings["MOTION_FOR_EJECTIONS"]["Y_MOTION"] *\
+                            sum(comb) + settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]
                 # 计算落点
                 xt = x_0 + 100 * motion[0] * (1 - 0.99 ** tick)
                 yt = MOTION_FOR_EJECTIONS["Y_INIT_POSITION"] + 100 * (y_motion + 3) * (1 - 0.99 ** tick) - 3 * tick

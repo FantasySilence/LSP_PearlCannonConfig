@@ -17,12 +17,14 @@ class ConfigInfoTransform:
     """
 
     @staticmethod
-    def translate(blue_TNT: int, red_TNT: int) -> tuple[str, str]:
+    def translate(
+        blue_TNT: int, red_TNT: int, settings: dict=None
+    ) -> tuple[str, str]:
 
         """
         blue_TNT：蓝色TNT数量，例如：913
         red_TNT：红色TNT数量，例如：612
-        输出：
+        输出：(如果单个阵列数为260)
         蓝色TNT数量：913 = 520 + 260 + 80 + 40 + 10 + 2 + 1
         红色TNT数量：612 = 520 + 80 + 10 + 2
         """
@@ -30,17 +32,21 @@ class ConfigInfoTransform:
         TNT_num = np.array([blue_TNT, red_TNT])
 
         # ------ 数量矩阵与二进制单位数矩阵的点乘 ------ #
-        unit = np.array([
-            [4160, 2080, 1040, 520, 260],
-            [160, 80, 40, 20, 10],
+        TNT_vector = np.array([settings["MAX_TNT_UNIT"], 10, 1]).reshape(3, 1)
+        bin_unit = np.array([
+            [16, 8, 4, 2, 1],
+            [16, 8, 4, 2, 1],
             [16, 8, 4, 2, 1],
         ])
+        unit = TNT_vector * bin_unit
 
-        # ------ 计算TNT当量中260, 10, 1的数量 ------ #
-        rest_num_of_260 = TNT_num // 260
-        rest_num_of_10 = TNT_num % 260 // 10
-        rest_num_of_1 = TNT_num % 260 % 10
-        rest_num_matrix = np.array([rest_num_of_260, rest_num_of_10, rest_num_of_1])
+        # ------ 计算TNT当量中单个阵列TNT数, 10, 1的数量 ------ #
+        rest_num_of_tnt_unit = TNT_num // settings["MAX_TNT_UNIT"]
+        rest_num_of_10 = TNT_num % settings["MAX_TNT_UNIT"] // 10
+        rest_num_of_1 = TNT_num % settings["MAX_TNT_UNIT"] % 10
+        rest_num_matrix = np.array(
+            [rest_num_of_tnt_unit, rest_num_of_10, rest_num_of_1]
+        )
 
         # ------ 生成一个矩阵用于存储二进制结果 ------ #
         blue_num_matrix = np.zeros((3, 5))

@@ -23,15 +23,15 @@ class InputFrame(ttk.Frame):
     def __init__(self, master, res_page: OutputFrame, *args, **kwargs):
 
         # ------ 读取设置文件中的默认设置 ------ #
-        settings = load_settings()
+        self.settings = load_settings()
 
         # ------ 创建输入窗口的根容器 ------ #
         super().__init__(master, *args, **kwargs)
-        self.x0_input = ttk.StringVar(value=settings["INIT_POSITION"]["X"])
-        self.z0_input = ttk.StringVar(value=settings["INIT_POSITION"]["Z"])
+        self.x0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSTION"]["X"])
+        self.z0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSTION"]["Z"])
         self.x_input = ttk.StringVar(value=0)
         self.z_input = ttk.StringVar(value=0)
-        self.max_tnt_input = ttk.StringVar(value=settings["MAX_TNT"])
+        self.max_tnt_input = ttk.StringVar(value=self.settings["MAX_TNT"])
         self.angel =ttk.StringVar(value="flat")
         self.direction = ttk.StringVar(value="north")
 
@@ -124,6 +124,10 @@ class InputFrame(ttk.Frame):
         )
         eject_buttons.grid(row=0, column=3, padx=5, pady=(10, 10), sticky=EW)
         flat_buttons.invoke()
+
+        # ------ 如果没有抛射模块，禁用抛射选项 ------ #
+        if not self.settings["IS_EJECTION_AVAILABLE"]:
+            eject_buttons.configure(state=DISABLED)
 
 
 
@@ -290,20 +294,20 @@ class InputFrame(ttk.Frame):
             direction, TNT_config = TNTConfigForFlat.config(
                 x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
                 x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                max_TNT=int(self.max_tnt_input.get())
+                max_TNT=int(self.max_tnt_input.get()), settings=self.settings
             )
             self.direction.set(direction)
-            self.res_page.load_TNT_config(TNT_config)
+            self.res_page.load_TNT_config(TNT_config, self.settings)
 
         # ------ 抛射配置 ------ #
         if self.angel.get() == "eject":
             direction, TNT_config = TNTConfigForEjection.config(
                 x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
                 x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                max_TNT=int(self.max_tnt_input.get())
+                max_TNT=int(self.max_tnt_input.get()), settings=self.settings
             )
             self.direction.set(direction)
-            self.res_page.load_TNT_config(TNT_config)
+            self.res_page.load_TNT_config(TNT_config, self.settings)
     
     def _func_simulation_button(self) -> None:
 
@@ -313,7 +317,7 @@ class InputFrame(ttk.Frame):
 
         self.res_page.load_pearl_trace(
             float(self.x0_input.get()), float(self.z0_input.get()),
-            self.direction.get(), self.angel.get()
+            self.direction.get(), self.angel.get(), settings=self.settings
         )
 
     def _func_upload_button(self) -> None:

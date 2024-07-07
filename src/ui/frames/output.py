@@ -94,16 +94,19 @@ class OutputFrame(ttk.Frame):
         # ------ 更新TNT详细信息 ------ #
         blue_TNT, red_TNT = self.item_values[2:4]
         blue_TNT_str, red_TNT_str = ConfigInfoTransform.translate(
-            int(blue_TNT[:-2]), int(red_TNT[:-2])
+            int(blue_TNT[:-2]), int(red_TNT[:-2]), settings=self.settings
         )
         self.blue_TNT_info.set(f"蓝色TNT数量：{blue_TNT_str}")
         self.red_TNT_info.set(f"红色TNT数量：{red_TNT_str}")
     
-    def load_TNT_config(self, config: pd.DataFrame) -> None:
+    def load_TNT_config(self, config: pd.DataFrame, settings: dict) -> None:
 
         """
         与用户输入进行通信，显示TNT配置信息
         """
+
+        # ------ 获取settings ------ #
+        self.settings = settings
 
         # ------ 清除原先的TNT详细信息 ------ #
         self.blue_TNT_info.set("蓝色TNT数量：")
@@ -174,7 +177,7 @@ class OutputFrame(ttk.Frame):
             self.scrollbar = None
 
     def load_pearl_trace(
-            self, x0: float, z0: float, direction: str, mode: str
+            self, x0: float, z0: float, direction: str, mode: str, settings: dict
     ) -> None:
 
         """
@@ -217,7 +220,7 @@ class OutputFrame(ttk.Frame):
         # ------ 计算珍珠运行轨迹 ------ #
         trace_info = PearlPathTracing.generate(
             x0, z0, tnt_num=res[1:], direction=direction, 
-            max_ticks=int(res[0]) + 50, mode=mode
+            max_ticks=int(res[0]) + 50, mode=mode, settings=settings
         )
         trace_info[["x", "y", "z"]] = np.round(trace_info[["x", "y", "z"]], 6)
 
