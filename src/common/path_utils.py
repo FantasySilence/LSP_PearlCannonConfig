@@ -32,8 +32,8 @@ def get_config_path() -> str:
     获取用户目录中的配置文件路径
     """
 
-    user_dir = os.path.expanduser('~')
-    config_dir = os.path.join(user_dir, '.LSP_PearlCannonConfig')
+    exe_dir = get_executable_path()
+    config_dir = os.path.join(exe_dir, 'AppSettings')
     if not os.path.exists(config_dir):
         os.makedirs(config_dir)
     return os.path.join(config_dir, 'settings.json')
