@@ -20,7 +20,7 @@ from src.common.input_validation import validate_number
 
 class SettingsFrame(ttk.Frame):
 
-    def __init__(self, master) -> None:
+    def __init__(self, master, lang) -> None:
         
         # ------ 创建主页面窗口的根容器 ------ #
         super().__init__(master)
@@ -36,6 +36,15 @@ class SettingsFrame(ttk.Frame):
         self.frame.pack(fill=BOTH, expand=YES)
         self.validation_func = self.frame.register(validate_number)
         self.pack(fill=BOTH, expand=YES)
+
+        # ------ 读取语言设置 ------ #
+        self.lang = lang
+        with open(
+            FilesIO.getLanguage("languages.json"), mode="r", encoding="utf-8"
+        ) as f:
+            self.LANGUAGE = json.load(f)
+        
+        # ------ 创建页面 ------ #
         self.create_page()
     
     def create_page(self) -> None:
@@ -45,13 +54,13 @@ class SettingsFrame(ttk.Frame):
         """
 
         # ------ 输入珍珠初始位置的x坐标 ------ #
-        x0_label = ttk.Label(
+        self.x0_label = ttk.Label(
             master=self.frame, 
-            text="输入珍珠默认初始x位置:", 
+            text=self.LANGUAGE[self.lang]["settings_frame"]["default_x"],
             font=Font(family="宋体", size=10),
             bootstyle=(INVERSE, LIGHT)
         )
-        x0_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+        self.x0_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
         
         x0_input = ttk.Entry(
             master=self.frame, textvariable=self.x0_input, width=10,
@@ -60,13 +69,13 @@ class SettingsFrame(ttk.Frame):
         x0_input.grid(row=0, column=1, padx=5, pady=5, sticky=EW)
 
         # ------ 输入珍珠初始位置的z坐标 ------ #
-        z0_label = ttk.Label(
+        self.z0_label = ttk.Label(
             master=self.frame,
-            text="输入珍珠默认初始z位置:",
+            text=self.LANGUAGE[self.lang]["settings_frame"]["default_z"],
             font=Font(family="宋体", size=10),
             bootstyle=(INVERSE, LIGHT)
         )
-        z0_label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        self.z0_label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
         z0_input = ttk.Entry(
             master=self.frame, textvariable=self.z0_input, width=10,
             validate="focus", validatecommand=(self.validation_func, '%P')
@@ -74,13 +83,13 @@ class SettingsFrame(ttk.Frame):
         z0_input.grid(row=1, column=1, padx=5, pady=5, sticky=EW)
 
         # ------ 输入最大TNT数量 ------ #
-        tnt_input_label = ttk.Label(
+        self.tnt_input_label = ttk.Label(
             master=self.frame,
-            text="输入默认最大TNT数量:",
+            text=self.LANGUAGE[self.lang]["settings_frame"]["default_max_tnt"],
             font=Font(family="宋体", size=10),
             bootstyle=(INVERSE, LIGHT)
         )
-        tnt_input_label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
+        self.tnt_input_label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
         tnt_input = ttk.Entry(
             master=self.frame, textvariable=self.max_tnt_input, width=10,
             validate="focus", validatecommand=(self.validation_func, '%P')
@@ -88,24 +97,24 @@ class SettingsFrame(ttk.Frame):
         tnt_input.grid(row=2, column=1, padx=5, pady=5, sticky=EW)
 
         # ------ 应用按钮 ------ #
-        apply_button = ttk.Button(
+        self.apply_button = ttk.Button(
             master=self.frame,
-            text="应用",
+            text=self.LANGUAGE[self.lang]["settings_frame"]["button_apply"],
             command=self.apply_settings,
             bootstyle=(PRIMARY, LIGHT),
         )
-        apply_button.grid(
+        self.apply_button.grid(
             row=3, column=0, padx=5, pady=5, sticky=EW, columnspan=2
         )
 
         # ------ 导入设置文件按钮 ------ #
-        upload_button = ttk.Button(
+        self.upload_buttons = ttk.Button(
             master=self.frame,
-            text="导入设置",
+            text=self.LANGUAGE[self.lang]["settings_frame"]["button_import"],
             command=self.upload_button,
             bootstyle=(INFO, LIGHT),
         )
-        upload_button.grid(
+        self.upload_buttons.grid(
             row=4, column=0, padx=5, pady=5, sticky=EW, columnspan=2
         )
 
@@ -168,5 +177,3 @@ class SettingsFrame(ttk.Frame):
         except Exception as e:
             print(file_path)
             messagebox.showerror("Error", f"Failed to import settings: {e}")
-
-        
