@@ -41,3 +41,16 @@ class FilesIO:
         resources_path = os.path.join(ROOTPATH, 'resources')
         images_path = os.path.join(resources_path, 'images')
         return os.path.join(images_path, filename)
+
+    @staticmethod
+    def getLanguage(filename: str) -> str:
+
+        """
+        加载语言包
+        """
+
+        src_path = os.path.dirname(os.path.dirname(__file__))
+        ROOTPATH = os.path.dirname(src_path)
+        resources_path = os.path.join(ROOTPATH, 'resources')
+        language_path = os.path.join(resources_path, 'languages')
+        return os.path.join(language_path, filename)
