@@ -6,6 +6,7 @@
 # =================================== #
 # @Description: 主程序的界面           #
 # =================================== #
+import json
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from src.ui.frames.output import OutputFrame
@@ -22,6 +23,22 @@ class MainFrame(ttk.Frame):
         self.pack_propagate(False)
         self.grid_propagate(False)
         self.pack(fill=BOTH, expand=YES)
+
+        # ------ 子页面列表 ------ #
+        self.sub_pages = []
+
+        # ------ 读取语言设置 ------ #
+        self.language = ttk.StringVar(value="简体中文")
+        self.language_code = {
+            "English": "en", "简体中文": "zh_CN", "繁體中文": "zh_TW"
+        }
+        with open(
+            resource_path("resources/languages/languages.json"), 
+            mode="r", encoding="utf-8"
+        ) as f:
+            self.LANGUAGE = json.load(f)
+        
+        # ------ 创建页面 ------ #
         self.create_page()
 
     def create_page(self) -> None:
@@ -49,13 +66,25 @@ class MainFrame(ttk.Frame):
         )
         hdr_label.pack(side=LEFT)
         # 向标题子容器中添加标题文字
-        logo_text = ttk.Label(
+        self.logo_text = ttk.Label(
             master=hdr_frame,
             text='LSP Hub通用珍珠炮配置器',
             font=('TkDefaultFixed', 30),
             bootstyle=(INVERSE, INFO)
         )
-        logo_text.pack(side=LEFT, padx=15, ipadx=50)
+        self.logo_text.pack(side=LEFT, padx=15, ipadx=50)
+        # 向标题子容器中添加语言设置
+        self.language_menu = ttk.Combobox(
+            master=hdr_frame, 
+            textvariable=self.language, 
+            values=["English", "简体中文", "繁體中文"],
+            bootstyle=SUCCESS,
+            width=10,
+            state="readonly"
+        )
+        self.language_menu.pack(side=RIGHT, padx=10)
+        self.language_menu.bind("<<ComboboxSelected>>", lambda e: self.update_language())
+        self.language_menu.select_clear()
 
         # ------ 创建存放用户输入与结果显示的容器 ------ #
         self.main_frame = ttk.Frame(self, bootstyle=LIGHT)
@@ -67,13 +96,32 @@ class MainFrame(ttk.Frame):
         # 向主容器中添加结果显示子容器
         result_frame = OutputFrame(self.main_frame, width=800, height=730)
         result_frame.grid(row=0, column=1, sticky=NSEW)
+        self.sub_pages.append(result_frame)
         # 向主容器中添加用户输入子容器
         input_frame = InputFrame(self.main_frame, result_frame, width=400, height=730)
         input_frame.grid(row=0, column=0, sticky=NSEW)
+        self.sub_pages.append(input_frame)
+    
+    def update_language(self) -> None:
+
+        """
+        更新语言设置
+        """
+
+        # ------ 清除选中状态 ------ #
+        self.after(1, lambda: self.language_menu.selection_clear())
+
+        # ------ 更新主界面的语言 ------ #
+        lang = self.language_code[self.language.get()]
+        self.logo_text.config(text=self.LANGUAGE[lang]["title"])
+
+        # ------ 更新其他子页面的语言 ------ #
+        for page in self.sub_pages:
+            page.update_language(lang)
 
     @staticmethod
     def _show() -> None:
-        root = ttk.Window(title="LSP_PearlConfig v4.0", size=(1200, 800))
+        root = ttk.Window(title="LSP_PearlConfig v5.0", size=(1200, 800))
         MainFrame(root)
         root.mainloop()
 
