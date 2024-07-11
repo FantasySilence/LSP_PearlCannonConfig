@@ -1,0 +1,134 @@
+{
+    "en": {
+        "title": "LSP Hub PearlCannon Configurator",
+        "input_frame": {
+            "input_labelframe_text": "Input Pearl's Coordinates",
+            "original_x": "Origin X",
+            "original_z": "Origin Z",
+            "target_x": "Destination X",
+            "target_z": "Destination Z",
+            "max_tnt": "Max TNT",
+            "angle": "Launch Angle",
+            "flat": "Flat Shot",
+            "eject": "Arc Shot",
+            "button_cal_tnt": "Calculate TNT Amount",
+            "button_pearl_simu": "Pearl Simulation",
+            "button_settings": "Default Settings",
+            "button_exit": "Exit"
+        },
+        "output_frame": {
+            "output_labelframe_text": "Configuration Output",
+            "blue_tnt_label": "Blue TNT：",
+            "red_tnt_label": "Red TNT：",
+            "config_treeview": {
+                "columns_1": "Distance",
+                "columns_2": "Flight Time",
+                "columns_3": "Blue",
+                "columns_4": "Red",
+                "columns_5": "Total"
+            },
+            "trace_treeview": {
+                "columns_1": "Ticks",
+                "columns_2": "X Coordinate",
+                "columns_3": "Y Coordinate",
+                "columns_4": "Z Coordinate"
+            }
+        },
+        "settings_frame": {
+            "title": "Settings",
+            "default_x": "Default X Position",
+            "default_z": "Default Z Position",
+            "default_max_tnt": "Default Maximum TNT",
+            "button_apply": "Apply",
+            "button_import": "Import Settings"
+        }
+    },
+    "zh_CN": {
+        "title": "LSP Hub通用珍珠炮配置器",
+        "input_frame": {
+            "input_labelframe_text": "输入珍珠的坐标",
+            "original_x": "炮口X坐标",
+            "original_z": "炮口Z坐标",
+            "target_x": "目标X坐标",
+            "target_z": "目标Z坐标",
+            "max_tnt": "最大TNT数量",
+            "angle": "珍珠发射角度",
+            "flat": "平射",
+            "eject": "抛射",
+            "button_cal_tnt": "计算TNT当量",
+            "button_pearl_simu": "珍珠模拟",
+            "button_settings": "默认值设置",
+            "button_exit": "退出"
+        },
+        "output_frame": {
+            "output_labelframe_text": "配置信息结果输出",
+            "blue_tnt_label": "蓝色TNT数量：",
+            "red_tnt_label": "红色TNT数量：",
+            "config_treeview": {
+                "columns_1": "距离偏移",
+                "columns_2": "飞行时间",
+                "columns_3": "蓝色TNT数量",
+                "columns_4": "红色TNT数量",
+                "columns_5": "TNT总数量"
+            },
+            "trace_treeview": {
+                "columns_1": "游戏刻",
+                "columns_2": "X坐标",
+                "columns_3": "Y坐标",
+                "columns_4": "Z坐标"
+            }
+        },
+        "settings_frame": {
+            "title": "设置",
+            "default_x": "输入珍珠默认初始X位置",
+            "default_z": "输入珍珠默认初始Z位置",
+            "default_max_tnt": "输入默认最大TNT数量",
+            "button_apply": "应用",
+            "button_import": "导入设置"
+        }
+    },
+    "zh_TW": {
+        "title": "LSP Hub通用珍珠砲配置器",
+        "input_frame": {
+            "input_labelframe_text": "輸入珍珠的座標",
+            "original_x": "砲口X座標",
+            "original_z": "砲口Z座標",
+            "target_x": "目標X座標",
+            "target_z": "目標Z座標",
+            "max_tnt": "最大TNT數量",
+            "angle": "珍珠發射角度",
+            "flat": "平射",
+            "eject": "拋射",
+            "button_cal_tnt": "計算TNT當量",
+            "button_pearl_simu": "珍珠模擬",
+            "button_settings": "默認值設置",
+            "button_exit": "退出"
+        },
+        "output_frame": {
+            "output_labelframe_text": "配置信息結果輸出",
+            "blue_tnt_label": "藍色TNT數量：",
+            "red_tnt_label": "紅色TNT數量：",
+            "config_treeview": {
+                "columns_1": "距離偏移",
+                "columns_2": "飛行時間",
+                "columns_3": "藍色TNT數量",
+                "columns_4": "紅色TNT數量",
+                "columns_5": "TNT總數量"
+            },
+            "trace_treeview": {
+                "columns_1": "遊戲刻",
+                "columns_2": "X座標",
+                "columns_3": "Y座標",
+                "columns_4": "Z座標"
+            }
+        },
+        "settings_frame": {
+            "title": "設置",
+            "default_x": "輸入珍珠默認初始X位置",
+            "default_z": "輸入珍珠默認初始Z位置",
+            "default_max_tnt": "輸入默認最大TNT數量",
+            "button_apply": "應用",
+            "button_import": "導入設置"
+        }
+    }
+}
