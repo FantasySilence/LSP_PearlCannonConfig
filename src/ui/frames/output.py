@@ -6,10 +6,12 @@
 # =================================== #
 # @Description: 结果输出页面           #
 # =================================== #
+import json
 import numpy as np
 import pandas as pd
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from src.common.path_utils import *
 from src.modules.pearltrace import PearlPathTracing
 from src.modules.config_transform import ConfigInfoTransform
 
@@ -33,6 +35,16 @@ class OutputFrame(ttk.Frame):
         self.treeview, self.trace_treeview = None, None
         self.item_index = None
         self.scrollbar, self.scrollbar_trace = None, None
+
+        # ------ 读取语言设置 ------ #
+        self.lang = "zh_CN"
+        with open(
+            resource_path("resources/languages/languages.json"), 
+            mode="r", encoding="utf-8"
+        ) as f:
+            self.LANGUAGE = json.load(f)
+        
+        # ------ 创建页面 ------ #
         self.create_page()
 
     def create_page(self) -> None:
@@ -96,8 +108,12 @@ class OutputFrame(ttk.Frame):
         blue_TNT_str, red_TNT_str = ConfigInfoTransform.translate(
             int(blue_TNT[:-2]), int(red_TNT[:-2]), settings=self.settings
         )
-        self.blue_TNT_info.set(f"蓝色TNT数量：{blue_TNT_str}")
-        self.red_TNT_info.set(f"红色TNT数量：{red_TNT_str}")
+        self.blue_TNT_info.set(
+            self.LANGUAGE[self.lang]["output_frame"]["blue_tnt_label"] + blue_TNT_str
+        )
+        self.red_TNT_info.set(
+            self.LANGUAGE[self.lang]["output_frame"]["red_tnt_label"] + red_TNT_str
+        )
     
     def load_TNT_config(self, config: pd.DataFrame, settings: dict) -> None:
 
@@ -109,8 +125,12 @@ class OutputFrame(ttk.Frame):
         self.settings = settings
 
         # ------ 清除原先的TNT详细信息 ------ #
-        self.blue_TNT_info.set("蓝色TNT数量：")
-        self.red_TNT_info.set("红色TNT数量：")
+        self.blue_TNT_info.set(
+            self.LANGUAGE[self.lang]["output_frame"]["blue_tnt_label"]
+        )
+        self.red_TNT_info.set(
+            self.LANGUAGE[self.lang]["output_frame"]["red_tnt_label"]
+        )
 
         # ------ 清除原先的轨迹信息 ------ #
         self.item_index = None
@@ -122,7 +142,13 @@ class OutputFrame(ttk.Frame):
             self.trace_treeview.destroy()
 
         # ------ 表头 ------ #
-        columns = ("距离偏移", "飞行时间", "蓝色TNT数量", "红色TNT数量", "TNT总数量")
+        columns=(
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"],
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"],
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_3"],
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_4"],
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_5"],
+        )
 
         # ------ 创建Treeview ------ #
         self.treeview = ttk.Treeview(
@@ -132,12 +158,18 @@ class OutputFrame(ttk.Frame):
 
         # ------ 为表头配置函数，点击进行排序 ------ #
         self.treeview.heading(
-            '距离偏移', text='距离偏移', 
-            command=lambda: self.sort_column('距离偏移')
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"], 
+            text=self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"], 
+            command=lambda: self.sort_column(
+                self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"]
+            )
         )
         self.treeview.heading(
-            '飞行时间', text='飞行时间', 
-            command=lambda: self.sort_column('飞行时间')
+            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"], 
+            text=self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"], 
+            command=lambda: self.sort_column(
+                self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"]
+            )
         )
 
         # ------ 设置列格式，确保对齐等 ------ #
@@ -195,7 +227,12 @@ class OutputFrame(ttk.Frame):
             self.trace_treeview.destroy()
 
         # ------ 表头 ------ #
-        columns = ("游戏刻", "X坐标", "Y坐标", "Z坐标")
+        columns = (
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_1"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_2"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_3"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_4"],
+        )
 
         # ------ 创建Treeview ------ #
         self.trace_treeview = ttk.Treeview(
@@ -261,3 +298,71 @@ class OutputFrame(ttk.Frame):
         data.sort(reverse=reverse)
         for index, (val, child) in enumerate(data):
             self.treeview.move(child, '', index)
+
+    def update_language(self, lang: str) -> None:
+
+        """
+        更新语言设置
+        """
+
+        # ------ 通信，获取语言设置 ------ #
+        self.lang = lang
+
+        # ------ 更新页面标签语言 ------ #
+        self.res_frame.config(
+            text=self.LANGUAGE[lang]["output_frame"]["output_labelframe_text"]
+        )
+
+        # ------ 更新配置结果树状菜单语言 ------ #
+        columns=(
+            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_1"],
+            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_2"],
+            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_3"],
+            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_4"],
+            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_5"],
+        )
+        try:
+            self.treeview.config(columns=columns)
+            for col in columns:
+                self.treeview.heading(col, text=col, anchor=CENTER)
+                self.treeview.column(col, width=159, anchor=CENTER)
+        except Exception:
+            pass
+        
+        # ------ 更新轨迹模拟树状菜单语言 ------ #
+        columns = (
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_1"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_2"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_3"],
+            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_4"],
+        )
+        try:
+            self.trace_treeview.config(columns=columns)
+            for col in columns:
+                self.trace_treeview.heading(col, text=col, anchor=CENTER)
+                self.trace_treeview.column(col, width=198, anchor=CENTER)
+        except Exception:
+            pass
+
+        # ------ 更新TNT数量标签 ------ #
+        if len(self.blue_TNT_info.get().split("：")) == 1:
+            self.blue_TNT_info.set(
+                value=self.LANGUAGE[lang]["output_frame"]["blue_tnt_label"],
+            )
+        # 如果调整语言时，已经存在配置信息
+        else:
+            blue_TNT_str = self.blue_TNT_info.get().split("：")[1]
+            self.blue_TNT_info.set(
+                value=self.LANGUAGE[lang]["output_frame"]["blue_tnt_label"] + blue_TNT_str
+            )
+        
+        if len(self.red_TNT_info.get().split("：")) == 1:
+            self.red_TNT_info.set(
+                value=self.LANGUAGE[lang]["output_frame"]["red_tnt_label"],
+            )
+        # 如果调整语言时，已经存在配置信息
+        else:
+            red_TNT_str = self.red_TNT_info.get().split("：")[1]
+            self.red_TNT_info.set(
+                value=self.LANGUAGE[lang]["output_frame"]["red_tnt_label"] + red_TNT_str
+            )
