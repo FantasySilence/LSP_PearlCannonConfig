@@ -130,12 +130,20 @@ class SettingsFrame(ttk.Frame):
             FilesIO.load_json("settings.json"), mode="r"
         ) as file:
             settings = json.load(file)
-            if self.x0_input.get() != '':
-                settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
-            if self.z0_input.get() != '':
-                settings["INIT_POSITION"]["Z"] = float(self.z0_input.get())
-            if self.max_tnt_input.get() != '':
-                settings["MAX_TNT"] = int(self.max_tnt_input.get())
+            try:
+                if self.x0_input.get() != '':
+                    settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
+                if self.z0_input.get() != '':
+                    settings["INIT_POSITION"]["Z"] = float(self.z0_input.get())
+                if self.max_tnt_input.get() != '':
+                    settings["MAX_TNT"] = int(self.max_tnt_input.get())
+             # 出错时显示弹窗
+            except Exception:
+                messagebox.showerror(
+                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
+                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
+                )
+                return
 
         # ------ 将修改后的设置进行保存 ------ #
         with open(
