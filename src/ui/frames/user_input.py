@@ -9,6 +9,7 @@
 import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
+from tkinter import messagebox
 from ttkbootstrap.constants import *
 from src.common.path_utils import *
 from src.ui.frames.output import OutputFrame
@@ -302,21 +303,39 @@ class InputFrame(ttk.Frame):
 
         # ------ 平射配置 ------ #
         if self.angel.get() == "flat":
-            direction, TNT_config = TNTConfigForFlat.config(
-                x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
-                x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                max_TNT=int(self.max_tnt_input.get()), settings=self.settings
-            )
+            # 尝试计算TNT数量与方向
+            try:
+                direction, TNT_config = TNTConfigForFlat.config(
+                    x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
+                    x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
+                    max_TNT=int(self.max_tnt_input.get()), settings=self.settings
+                )
+            # 出错时显示弹窗
+            except Exception:
+                messagebox.showerror(
+                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
+                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
+                )
+                return
             self.direction.set(direction)
             self.res_page.load_TNT_config(TNT_config, self.settings)
 
         # ------ 抛射配置 ------ #
         if self.angel.get() == "eject":
-            direction, TNT_config = TNTConfigForEjection.config(
-                x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
-                x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                max_TNT=int(self.max_tnt_input.get()), settings=self.settings
-            )
+            # 尝试计算TNT数量与方向
+            try:
+                direction, TNT_config = TNTConfigForEjection.config(
+                    x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
+                    x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
+                    max_TNT=int(self.max_tnt_input.get()), settings=self.settings
+                )
+            # 出错时显示弹窗
+            except Exception:
+                messagebox.showerror(
+                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
+                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
+                )
+                return
             self.direction.set(direction)
             self.res_page.load_TNT_config(TNT_config, self.settings)
     
