@@ -41,6 +41,10 @@
             "default_max_tnt": "Default Maximum TNT",
             "button_apply": "Apply",
             "button_import": "Import Settings"
+        },
+        "error_frame": {
+            "title": "Error",
+            "error_message": "Invalid input, Please check your input"
         }
     },
     "zh_CN": {
@@ -85,6 +89,10 @@
             "default_max_tnt": "输入默认最大TNT数量",
             "button_apply": "应用",
             "button_import": "导入设置"
+        },
+        "error_frame": {
+            "title": "错误",
+            "error_message": "输入无效，请检查您的输入"
         }
     },
     "zh_TW": {
@@ -129,6 +137,10 @@
             "default_max_tnt": "輸入默認最大TNT數量",
             "button_apply": "應用",
             "button_import": "導入設置"
+        },
+        "error_frame": {
+            "title": "錯誤",
+            "error_message": "輸入無效，請檢查您的輸入"
         }
     }
 }
