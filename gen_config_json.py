@@ -32,7 +32,7 @@ Github: https://github.com/FantasySilence/LSP_PearlCannonConfig
 请确保在使用本生成器前，您的MC客户端能够在游戏中获取 /log projectiles full 指令的信息
 """
 print(banner)
-print("如果您已经了解，请按下任意键......")
+print("如果您已经了解，请按下回车键......")
 input()
 
 datatype = TypeVar('datatype')
