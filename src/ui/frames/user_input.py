@@ -9,14 +9,15 @@
 import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
-from tkinter import messagebox
 from ttkbootstrap.constants import *
 from src.common.filesio import FilesIO
 from src.ui.frames.output import OutputFrame
-from src.ui.frames.settings import SettingsFrame
-from src.modules.calTNT_flat import TNTConfigForFlat
 from src.common.input_validation import validate_number
-from src.modules.calTNT_eject import TNTConfigForEjection
+from src.ui.interactions.user_input.entry_creation import *
+from src.ui.interactions.user_input.upload import func_upload_button
+from src.ui.interactions.user_input.tracing import func_simulation_button
+from src.ui.interactions.user_input.TNT_cal_button import func_calc_button
+from src.ui.interactions.user_input.language import update_language_in_user_input
 
 
 class InputFrame(ttk.Frame):
@@ -83,10 +84,10 @@ class InputFrame(ttk.Frame):
         self.input_page.grid(row=0, column=0, sticky=NSEW, pady=(0, 0))
         
         # ------ 配置珍珠炮炮口的初始位置 ------ #
-        self.original_config()
+        original_config(self)
 
         # ------ 配置珍珠炮炮口的目标位置 ------ #
-        self.target_config()
+        target_config(self)
 
         # ------ 配置最大TNT数量的输入框 ------ #
         self.TNT_label = ttk.Label(
@@ -101,8 +102,6 @@ class InputFrame(ttk.Frame):
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         TNT_input.grid(row=9, column=0, padx=5, pady=5, sticky=EW)
-
-
 
         # ------ 创建存放发射角度多选按钮的页面容器 ------ #
         self.angle_select_page = ttk.Frame(self.input_frame, width=400, height=40)
@@ -140,8 +139,6 @@ class InputFrame(ttk.Frame):
         # ------ 如果没有抛射模块，禁用抛射选项 ------ #
         if not self.settings["IS_EJECTION_AVAILABLE"]:
             self.eject_buttons.configure(state=DISABLED)
-
-
 
         # ------ 创建存放方向多选按钮的页面容器 ------ #
         self.direc_select_page = ttk.Frame(self.input_frame, width=400, height=40)
@@ -183,8 +180,6 @@ class InputFrame(ttk.Frame):
         )
         west_button.grid(row=1, column=3, padx=5, pady=(10, 10), sticky=EW)
 
-
-
         # ------ 创建存放按钮的的页面容器 ------ #
         self.button_page = ttk.Frame(self.input_frame, width=400, height=250)
         self.button_page.columnconfigure(0, weight=1)
@@ -196,7 +191,7 @@ class InputFrame(ttk.Frame):
             master=self.button_page,
             text="计算TNT当量",
             bootstyle=(PRIMARY, OUTLINE),
-            command=self._func_calc_button
+            command=lambda: func_calc_button(self)
         )
         self.calc_button.grid(row=1, column=0, padx=5, pady=(10, 10), sticky=EW)
 
@@ -205,7 +200,7 @@ class InputFrame(ttk.Frame):
             master=self.button_page,
             text="珍珠模拟",
             bootstyle=(SECONDARY, OUTLINE),
-            command=self._func_simulation_button
+            command=lambda: func_simulation_button(self)
         )
         self.simulation_button.grid(row=2, column=0, padx=5, pady=(10, 10), sticky=EW)
 
@@ -214,7 +209,7 @@ class InputFrame(ttk.Frame):
             master=self.button_page,
             text="默认值设置",
             bootstyle=(INFO, OUTLINE),
-            command=self._func_upload_button
+            command=lambda: func_upload_button(self)
         )
         self.upload_button.grid(row=3, column=0, padx=5, pady=(10, 10), sticky=EW)
 
@@ -227,209 +222,11 @@ class InputFrame(ttk.Frame):
         )
         self.exit_button.grid(row=4, column=0, padx=5, pady=(10, 10), sticky=EW)
 
-    def original_config(self) -> None:
-
-        """
-        炮口坐标输入
-        """
-
-        # 输入珍珠x坐标
-        self.origin_x_label = ttk.Label(
-            master=self.input_page, 
-            text="炮口X坐标：", 
-            font=Font(family="宋体", size=10),
-            bootstyle=(INVERSE, LIGHT)
-        )
-        self.origin_x_label.grid(row=0, column=0, padx=5, pady=5, sticky=W)
-        x_input = ttk.Entry(
-            master=self.input_page, textvariable=self.x0_input, width=10,
-            validate="focus", validatecommand=(self.validation_func, '%P'),
-        )
-        x_input.grid(row=1, column=0, padx=5, pady=5, sticky=EW)
-
-        # 输入珍珠z坐标
-        self.origin_z_label = ttk.Label(
-            master=self.input_page, 
-            text="炮口Z坐标：", 
-            font=Font(family="宋体", size=10),
-            bootstyle=(INVERSE, LIGHT),
-        )
-        self.origin_z_label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
-        z_input = ttk.Entry(
-            master=self.input_page, textvariable=self.z0_input, width=10,
-            validate="focus", validatecommand=(self.validation_func, '%P'),
-        )
-        z_input.grid(row=3, column=0, padx=5, pady=5, sticky=EW)
-
-    def target_config(self) -> None:
-
-        """
-        目标位置输入
-        """
-
-        # 输入目标x坐标
-        self.target_x_label = ttk.Label(
-            master=self.input_page, 
-            text="目标X坐标：", 
-            font=Font(family="宋体", size=10),
-            bootstyle=(INVERSE, LIGHT)
-        )
-        self.target_x_label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
-        x_input = ttk.Entry(
-            master=self.input_page, textvariable=self.x_input, width=10,
-            validate="focus", validatecommand=(self.validation_func, '%P')
-        )
-        x_input.grid(row=5, column=0, padx=5, pady=5, sticky=EW)
-
-        # 输入目标z坐标
-        self.target_z_label = ttk.Label(
-            master=self.input_page, 
-            text="目标Z坐标：", 
-            font=Font(family="宋体", size=10),
-            bootstyle=(INVERSE, LIGHT)
-        )
-        self.target_z_label.grid(row=6, column=0, padx=5, pady=5, sticky=W)
-        z_input = ttk.Entry(
-            master=self.input_page, textvariable=self.z_input, width=10,
-            validate="focus", validatecommand=(self.validation_func, '%P')
-        )
-        z_input.grid(row=7, column=0, padx=5, pady=5, sticky=EW)
-
-    def _func_calc_button(self) -> None:
-
-        """
-        "计算TNT当量"按钮的功能
-        """
-
-        # ------ 平射配置 ------ #
-        if self.angel.get() == "flat":
-            # 尝试计算TNT数量与方向
-            try:
-                direction, TNT_config = TNTConfigForFlat.config(
-                    x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
-                    x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                    max_TNT=int(self.max_tnt_input.get()), settings=self.settings
-                )
-            # 出错时显示弹窗
-            except Exception:
-                messagebox.showerror(
-                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
-                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
-                )
-                return
-            self.direction.set(direction)
-            self.res_page.load_TNT_config(TNT_config, self.settings)
-
-        # ------ 抛射配置 ------ #
-        if self.angel.get() == "eject":
-            # 尝试计算TNT数量与方向
-            try:
-                direction, TNT_config = TNTConfigForEjection.config(
-                    x_target=int(self.x_input.get()), z_target=int(self.z_input.get()), 
-                    x_0=float(self.x0_input.get()), z_0=float(self.z0_input.get()),
-                    max_TNT=int(self.max_tnt_input.get()), settings=self.settings
-                )
-            # 出错时显示弹窗
-            except Exception:
-                messagebox.showerror(
-                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
-                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
-                )
-                return
-            self.direction.set(direction)
-            self.res_page.load_TNT_config(TNT_config, self.settings)
-    
-    def _func_simulation_button(self) -> None:
-
-        """
-        "珍珠模拟"按钮的功能
-        """
-
-        self.res_page.load_pearl_trace(
-            float(self.x0_input.get()), float(self.z0_input.get()),
-            self.direction.get(), self.angel.get(), settings=self.settings
-        )
-
-    def _func_upload_button(self) -> None:
-
-        """
-        "默认值设置"按钮的功能
-        """
-
-        # ------ 如果已经存在一个窗口，先销毁它 ------ #
-        if self.settings_window:
-            self.settings_window.destroy()
-
-        # ------ 创建弹窗 ------ #
-        self.settings_window = ttk.Toplevel(self.input_frame)
-        self.settings_window.title(" ")
-        
-        # ------ 显示在主窗口的靠中心位置 ------ #
-        x = self.input_frame.winfo_rootx() + self.input_frame.winfo_width() // 2
-        y = self.input_frame.winfo_rooty()
-        self.settings_window.geometry(f"+{x}+{y}")
-
-        # ------ 创建页面 ------ #
-        settings_frame = SettingsFrame(self.settings_window, self.lang)
-        self.sub_pages.append(settings_frame)
-        settings_frame.pack(fill=BOTH, expand=YES)
-
     def update_language(self, lang: str) -> None:
 
         """
         更新语言设置
         """
 
-        # ------ 通信，获取语言设置 ------ #
-        self.lang = lang
-
-        # ------ 更新标签语言 ------ #
-        self.input_frame.config(
-            text=self.LANGUAGE[lang]["input_frame"]["input_labelframe_text"],
-        )
-
-        # ------ 更新炮口坐标 ------ #
-        self.origin_x_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["original_x"],
-        )  
-        self.origin_z_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["original_z"],
-        )
-
-        # ------ 更新目的地坐标 ------ #
-        self.target_x_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["target_x"],
-        )  
-        self.target_z_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["target_z"],
-        )
-
-        # ------ 更新最大TNT数量 ------ #
-        self.TNT_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["max_tnt"],
-        )
-
-        # ------ 更新珍珠发射角度 ------ #
-        self.angle_label.config(
-            text=self.LANGUAGE[lang]["input_frame"]["angle"],
-        )
-        self.flat_buttons.config(
-            text=self.LANGUAGE[lang]["input_frame"]["flat"],
-        )
-        self.eject_buttons.config(
-            text=self.LANGUAGE[lang]["input_frame"]["eject"],
-        )
-
-        # ------ 更新操作按钮的语言 ------ #
-        self.calc_button.config(
-            text=self.LANGUAGE[lang]["input_frame"]["button_cal_tnt"],
-        )
-        self.simulation_button.config(
-            text=self.LANGUAGE[lang]["input_frame"]["button_pearl_simu"],
-        )
-        self.upload_button.config(
-            text=self.LANGUAGE[lang]["input_frame"]["button_settings"],
-        )
-        self.exit_button.config(
-            text=self.LANGUAGE[lang]["input_frame"]["button_exit"],
-        )
+        update_language_in_user_input(self, lang)
+        

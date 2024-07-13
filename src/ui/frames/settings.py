@@ -6,16 +6,14 @@
 # =================================== #
 # @Description: 设置界面               #
 # =================================== #
-import os
-import sys
 import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
-from tkinter import messagebox
 from ttkbootstrap.constants import *
-from tkinter.filedialog import askopenfilename
 from src.common.filesio import FilesIO
 from src.common.input_validation import validate_number
+from src.ui.interactions.settings.upload import upload_button
+from src.ui.interactions.settings.setting_apply import apply_settings
 
 
 class SettingsFrame(ttk.Frame):
@@ -100,7 +98,7 @@ class SettingsFrame(ttk.Frame):
         self.apply_button = ttk.Button(
             master=self.frame,
             text=self.LANGUAGE[self.lang]["settings_frame"]["button_apply"],
-            command=self.apply_settings,
+            command=lambda: apply_settings(self),
             bootstyle=(PRIMARY, LIGHT),
         )
         self.apply_button.grid(
@@ -111,77 +109,9 @@ class SettingsFrame(ttk.Frame):
         self.upload_buttons = ttk.Button(
             master=self.frame,
             text=self.LANGUAGE[self.lang]["settings_frame"]["button_import"],
-            command=self.upload_button,
+            command=lambda: upload_button(self),
             bootstyle=(INFO, LIGHT),
         )
         self.upload_buttons.grid(
             row=4, column=0, padx=5, pady=5, sticky=EW, columnspan=2
         )
-
-
-    def apply_settings(self) -> None:
-
-        """
-        应用设置
-        """
-
-        # ------ 读取现有的设置并进行修改 ------ #
-        with open(
-            FilesIO.load_json("settings.json"), mode="r"
-        ) as file:
-            settings = json.load(file)
-            try:
-                if self.x0_input.get() != '':
-                    settings["INIT_POSITION"]["X"] = float(self.x0_input.get())
-                if self.z0_input.get() != '':
-                    settings["INIT_POSITION"]["Z"] = float(self.z0_input.get())
-                if self.max_tnt_input.get() != '':
-                    settings["MAX_TNT"] = int(self.max_tnt_input.get())
-             # 出错时显示弹窗
-            except Exception:
-                messagebox.showerror(
-                    title=self.LANGUAGE[self.lang]["error_frame"]["title"], 
-                    message=self.LANGUAGE[self.lang]["error_frame"]["error_message"]
-                )
-                return
-
-        # ------ 将修改后的设置进行保存 ------ #
-        with open(
-            FilesIO.load_json("settings.json"), mode="w"
-        ) as files:    
-            json.dump(settings, files, indent=4)
-
-        # ------ 重启应用，设置生效 ------ #
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
-
-    def upload_button(self) -> None:
-
-        """
-        导入设置
-        """
-
-        # ------ 导入文件窗口 ------ #
-        file_path = askopenfilename(
-            title="导入设置",
-            filetypes=[("JSON files", "*.json")]
-        )
-        if not file_path:
-            return
-
-        # ------ 将导入的文件内容写入应用的设置文件中 ------ #
-        try:
-            with open(file_path, mode="r") as file:
-                settings = json.load(file)
-                with open(
-                    FilesIO.load_json("settings.json"), mode="w"
-                ) as files:
-                    json.dump(settings, files, indent=4)
-            
-            # ------ 重启应用，设置生效 ------ #
-            python = sys.executable
-            os.execl(python, python, *sys.argv)
-
-        except Exception as e:
-            print(file_path)
-            messagebox.showerror("Error", f"Failed to import settings: {e}")
