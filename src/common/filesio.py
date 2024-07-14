@@ -7,7 +7,6 @@
 # @Descript: 自动生成文件路径           #
 # =================================== #
 import os
-import json
 
 
 class FilesIO:
