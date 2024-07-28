@@ -2,7 +2,7 @@
     "IS_EJECTION_AVAILABLE": true,
     "MAX_TNT": 3640,
     "MAX_TNT_UNIT": 260,
-    "XZ_INIT_POSTION": {
+    "XZ_INIT_POSITION": {
         "X": -31.9375,
         "Z": -8.0625
     },
