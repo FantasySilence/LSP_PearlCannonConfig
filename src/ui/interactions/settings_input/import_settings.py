@@ -40,8 +40,8 @@ def import_func(cls) -> None:
         if settings["IS_EJECTION_AVAILABLE"]:
             params_inputed = {
                 "basic": {
-                    "x0": settings["XZ_INIT_POSTION"]["X"],
-                    "z0": settings["XZ_INIT_POSTION"]["Z"],
+                    "x0": settings["XZ_INIT_POSITION"]["X"],
+                    "z0": settings["XZ_INIT_POSITION"]["Z"],
                     "max_tnt": settings["MAX_TNT"],
                     "tnt_per_unit": settings["MAX_TNT_UNIT"]
                 },
@@ -62,8 +62,8 @@ def import_func(cls) -> None:
         else:
             params_inputed = {
             "basic": {
-                "x0": settings["XZ_INIT_POSTION"]["X"],
-                "z0": settings["XZ_INIT_POSTION"]["Z"],
+                "x0": settings["XZ_INIT_POSITION"]["X"],
+                "z0": settings["XZ_INIT_POSITION"]["Z"],
                 "max_tnt": settings["MAX_TNT"],
                 "tnt_per_unit": settings["MAX_TNT_UNIT"]
             },
