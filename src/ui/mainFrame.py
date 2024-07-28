@@ -80,9 +80,17 @@ class MainFrame(ttk.Frame):
             width=10,
             state="readonly"
         )
-        self.language_menu.pack(side=RIGHT, padx=10)
+        self.language_menu.pack(side=RIGHT, padx=(0, 10))
         self.language_menu.bind("<<ComboboxSelected>>", lambda e: self.update_language())
         self.language_menu.select_clear()
+        # 向标题子容器中添加语言设置标签
+        lang_label = ttk.Label(
+            master=hdr_frame,
+            text='LANG:',
+            font=('TkDefaultFont', 15),
+            bootstyle=(INVERSE, INFO)
+        )
+        lang_label.pack(side=RIGHT, padx=(0, 4))
 
         # ------ 创建存放用户输入与结果显示的容器 ------ #
         self.main_frame = ttk.Frame(self, bootstyle=LIGHT)
@@ -119,7 +127,7 @@ class MainFrame(ttk.Frame):
 
     @staticmethod
     def _show() -> None:
-        root = ttk.Window(title="LSP_PearlConfig v5.1", size=(1200, 800))
+        root = ttk.Window(title="LSP_PearlConfig v6.0", size=(1200, 800))
         root.resizable(False, False)
         MainFrame(root)
         root.mainloop()
