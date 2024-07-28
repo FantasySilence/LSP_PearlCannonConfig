@@ -8,7 +8,7 @@
 # ============================================= #
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from src.ui.frames.settings import SettingsFrame
+from src.ui.frames.settings import AdvancedSettings
 
 
 def func_upload_button(cls) -> None:
@@ -22,7 +22,7 @@ def func_upload_button(cls) -> None:
         cls.settings_window.destroy()
 
     # ------ 创建弹窗 ------ #
-    cls.settings_window = ttk.Toplevel(cls.input_frame)
+    cls.settings_window = ttk.Toplevel(cls.input_frame, size=(1200, 700), resizable=(False, False))
     cls.settings_window.title(" ")
     
     # ------ 显示在主窗口的靠中心位置 ------ #
@@ -31,6 +31,6 @@ def func_upload_button(cls) -> None:
     cls.settings_window.geometry(f"+{x}+{y}")
 
     # ------ 创建页面 ------ #
-    settings_frame = SettingsFrame(cls.settings_window, cls.lang)
+    settings_frame = AdvancedSettings(cls.settings_window, cls.lang)
     cls.sub_pages.append(settings_frame)
     settings_frame.pack(fill=BOTH, expand=YES)
