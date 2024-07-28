@@ -30,8 +30,8 @@ class InputFrame(ttk.Frame):
 
         # ------ 创建输入窗口的根容器 ------ #
         super().__init__(master, *args, **kwargs)
-        self.x0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSTION"]["X"])
-        self.z0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSTION"]["Z"])
+        self.x0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSITION"]["X"])
+        self.z0_input = ttk.StringVar(value=self.settings["XZ_INIT_POSITION"]["Z"])
         self.x_input = ttk.StringVar(value=0)
         self.z_input = ttk.StringVar(value=0)
         self.max_tnt_input = ttk.StringVar(value=self.settings["MAX_TNT"])
@@ -199,7 +199,7 @@ class InputFrame(ttk.Frame):
         self.simulation_button = ttk.Button(
             master=self.button_page,
             text="珍珠模拟",
-            bootstyle=(SECONDARY, OUTLINE),
+            bootstyle=(INFO, OUTLINE),
             command=lambda: func_simulation_button(self)
         )
         self.simulation_button.grid(row=2, column=0, padx=5, pady=(10, 10), sticky=EW)
@@ -207,8 +207,8 @@ class InputFrame(ttk.Frame):
         # ------ 默认值设置按钮 ------ #
         self.upload_button = ttk.Button(
             master=self.button_page,
-            text="默认值设置",
-            bootstyle=(INFO, OUTLINE),
+            text="设置",
+            bootstyle=(PRIMARY, OUTLINE),
             command=lambda: func_upload_button(self)
         )
         self.upload_button.grid(row=3, column=0, padx=5, pady=(10, 10), sticky=EW)
