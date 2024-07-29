@@ -187,7 +187,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.y_flat_label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
         self.y_flat_input = ttk.Entry(
             master=self.flat_settings_page, state=self.flat_switch.get(),
-            textvariable=self.y0_flat, width=10,
+            textvariable=self.y0_flat, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.y_flat_input.grid(row=1, column=1, padx=5, pady=5, sticky=W)
@@ -202,7 +202,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.init_y_motion_flat_label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
         self.init_y_motion_flat_input = ttk.Entry(
             master=self.flat_settings_page, state=self.flat_switch.get(),
-            textvariable=self.y_init_motion_f, width=10,
+            textvariable=self.y_init_motion_f, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.init_y_motion_flat_input.grid(row=2, column=1, padx=5, pady=5, sticky=W)
@@ -217,7 +217,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.y_motion_flat_label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
         self.y_motion_flat_input = ttk.Entry(
             master=self.flat_settings_page, state=self.flat_switch.get(),
-            textvariable=self.y_flat_motion, width=10,
+            textvariable=self.y_flat_motion, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.y_motion_flat_input.grid(row=3, column=1, padx=5, pady=5, sticky=W)
@@ -232,7 +232,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.xz_init_motion_flat_label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
         self.xz_init_motion_flat_input = ttk.Entry(
             master=self.flat_settings_page, state=self.flat_switch.get(),
-            textvariable=self.xz_flat, width=10,
+            textvariable=self.xz_flat, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.xz_init_motion_flat_input.grid(row=4, column=1, padx=5, pady=5, sticky=W)
@@ -270,7 +270,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.y_eject_label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
         self.y_eject_input = ttk.Entry(
             master=self.eject_settings_page, state=self.eject_switch.get(),
-            textvariable=self.y0_eject, width=10,
+            textvariable=self.y0_eject, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.y_eject_input.grid(row=1, column=1, padx=5, pady=5, sticky=W)
@@ -285,7 +285,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.init_y_motion_eject_label.grid(row=2, column=0, padx=5, pady=5, sticky=W)
         self.init_y_motion_eject_input = ttk.Entry(
             master=self.eject_settings_page, state=self.eject_switch.get(),
-            textvariable=self.y_init_motion_e, width=10,
+            textvariable=self.y_init_motion_e, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.init_y_motion_eject_input.grid(row=2, column=1, padx=5, pady=5, sticky=W)
@@ -300,7 +300,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.y_motion_eject_label.grid(row=3, column=0, padx=5, pady=5, sticky=W)
         self.y_motion_eject_input = ttk.Entry(
             master=self.eject_settings_page, state=self.eject_switch.get(),
-            textvariable=self.y_eject_motion, width=10,
+            textvariable=self.y_eject_motion, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.y_motion_eject_input.grid(row=3, column=1, padx=5, pady=5, sticky=W)
@@ -315,7 +315,7 @@ class AdvancedSettingInput(ttk.Frame):
         self.xz_init_motion_eject_label.grid(row=4, column=0, padx=5, pady=5, sticky=W)
         self.xz_init_motion_eject_input = ttk.Entry(
             master=self.eject_settings_page, state=self.eject_switch.get(),
-            textvariable=self.xz_eject, width=10,
+            textvariable=self.xz_eject, width=25,
             validate="focus", validatecommand=(self.validation_func, '%P'),
         )
         self.xz_init_motion_eject_input.grid(row=4, column=1, padx=5, pady=5, sticky=W)
