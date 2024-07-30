@@ -1,6 +1,6 @@
 {
     "en": {
-        "title": "LSP Hub PearlCannon Configurator",
+        "title": "LSP Hub PearlCannon Configer",
         "input_frame": {
             "input_labelframe_text": "Input Pearl's Coordinates",
             "original_x": "Origin X",
@@ -13,7 +13,7 @@
             "eject": "Arc Shot",
             "button_cal_tnt": "Calculate TNT Amount",
             "button_pearl_simu": "Pearl Simulation",
-            "button_settings": "Default Settings",
+            "button_settings": "Settings",
             "button_exit": "Exit"
         },
         "output_frame": {
@@ -35,12 +35,49 @@
             }
         },
         "settings_frame": {
-            "title": "Settings",
-            "default_x": "Default X Position",
-            "default_z": "Default Z Position",
-            "default_max_tnt": "Default Maximum TNT",
-            "button_apply": "Apply",
-            "button_import": "Import Settings"
+            "settings_input_frame": {
+                "settings_input_labelframe_text": "Enter parameters according to the prompts",
+                "default_x": "X Coordinate:",
+                "default_z": "Z Coordinate:",
+                "default_max_tnt": "Max TNT per Side:",
+                "default_tnt_unit": "Max TNT per Array:",
+                "flat": {
+                    "button_text": "Flat Shot",
+                    "default_y": "Y Coordinate:",
+                    "zero_TNT_y_motion": "Initial Y Momentum(0 TNTs):",
+                    "one_TNT_y_motion": "Initial Y Momentum(1 TNTs):",
+                    "one_TNT_xz_motion": "Initial XZ Momentum(1 TNTs):"
+                },
+                "eject": {
+                    "button_text": "Arc Shot",
+                    "default_y": "Muzzle Y Coordinate:",
+                    "zero_TNT_y_motion": "Initial Y Momentum(0 TNTs):",
+                    "one_TNT_y_motion": "Initial Y Momentum(1 TNTs):",
+                    "one_TNT_xz_motion": "Initial XZ Momentum(1 TNTs):"
+                },
+                "button_preview": "Preview/Refresh",
+                "button_check_settings": "Check Current Settings",
+                "button_import": "Import Settings"
+            },
+            "preview_frame": {
+                "preview_labelframe_text": "Result Preview",
+                "button_confirm": "Use Previewed Results",
+                "button_export": "Export Settings",
+                "preview_text": {
+                    "row_1": "Has Eject Mode?",
+                    "row_2": "Maximum TNT per Side",
+                    "row_3": "Maximum TNT per Array",
+                    "row_4": "Initial Muzzle XZ Coordinates",
+                    "row_5": "XZ Momentum with 1 TNT (Flat)",
+                    "row_6": "Y Momentum with 1 TNT (Flat, Difference between two Y momentums)",
+                    "row_7": "Initial Y Momentum (Flat)",
+                    "row_8": "Position in Muzzle (Flat)",
+                    "row_9": "XZ Momentum with 1 TNT (Eject)",
+                    "row_10": "Y Momentum with 1 TNT (Eject, Difference between two Y momentums)",
+                    "row_11": "Initial Y Momentum (Eject)",
+                    "row_12": "Position in Muzzle (Eject)"
+                }
+            }
         },
         "error_frame": {
             "title": "Error",
@@ -61,7 +98,7 @@
             "eject": "抛射",
             "button_cal_tnt": "计算TNT当量",
             "button_pearl_simu": "珍珠模拟",
-            "button_settings": "默认值设置",
+            "button_settings": "设置",
             "button_exit": "退出"
         },
         "output_frame": {
@@ -83,12 +120,49 @@
             }
         },
         "settings_frame": {
-            "title": "设置",
-            "default_x": "输入珍珠默认初始X位置",
-            "default_z": "输入珍珠默认初始Z位置",
-            "default_max_tnt": "输入默认最大TNT数量",
-            "button_apply": "应用",
-            "button_import": "导入设置"
+            "settings_input_frame": {
+                "settings_input_labelframe_text": "根据提示输入参数",
+                "default_x": "炮口X坐标：",
+                "default_z": "炮口Z坐标：",
+                "default_max_tnt": "单边最大TNT数量：",
+                "default_tnt_unit": "单个阵列最大TNT数：",
+                "flat": {
+                    "button_text": "平射",
+                    "default_y": "炮口Y坐标：",
+                    "zero_TNT_y_motion": "0个TNT下开炮时珍珠初始Y动量：",
+                    "one_TNT_y_motion": "1个TNT下开炮时珍珠初始Y动量：",
+                    "one_TNT_xz_motion": "1个TNT下开炮时珍珠初始XZ动量："
+                },
+                "eject": {
+                    "button_text": "抛射",
+                    "default_y": "炮口Y坐标：",
+                    "zero_TNT_y_motion": "0个TNT下开炮时珍珠初始Y动量：",
+                    "one_TNT_y_motion": "1个TNT下开炮时珍珠初始Y动量：",
+                    "one_TNT_xz_motion": "1个TNT下开炮时珍珠初始XZ动量："
+                },
+                "button_preview": "预览/刷新",
+                "button_check_settings": "查看当前设置",
+                "button_import": "导入设置"
+            },
+            "preview_frame": {
+                "preview_labelframe_text": "结果预览",
+                "button_confirm": "使用预览中的结果",
+                "button_export": "导出设置",
+                "preview_text": {
+                    "row_1": "是否具有抛射模式",
+                    "row_2": "单侧最大TNT当量",
+                    "row_3": "单个阵列最大TNT数",
+                    "row_4": "炮口初始XZ坐标",
+                    "row_5": "平射时，1个TNT赋予珍珠的XZ动量",
+                    "row_6": "平射时，1个TNT赋予珍珠的Y动量(右侧两个Y动量的差)",
+                    "row_7": "平射时，珍珠具有的初始Y动量",
+                    "row_8": "平射时，珍珠在炮口中的位置",
+                    "row_9": "抛射时，1个TNT赋予珍珠的XZ动量",
+                    "row_10": "抛射时，1个TNT赋予珍珠的Y动量(右侧两个Y动量的差)",
+                    "row_11": "抛射时，珍珠具有的初始Y动量",
+                    "row_12": "抛射时，珍珠在炮口中的位置"
+                }
+            }
         },
         "error_frame": {
             "title": "错误",
@@ -109,7 +183,7 @@
             "eject": "拋射",
             "button_cal_tnt": "計算TNT當量",
             "button_pearl_simu": "珍珠模擬",
-            "button_settings": "默認值設置",
+            "button_settings": "設置",
             "button_exit": "退出"
         },
         "output_frame": {
@@ -131,12 +205,49 @@
             }
         },
         "settings_frame": {
-            "title": "設置",
-            "default_x": "輸入珍珠默認初始X位置",
-            "default_z": "輸入珍珠默認初始Z位置",
-            "default_max_tnt": "輸入默認最大TNT數量",
-            "button_apply": "應用",
-            "button_import": "導入設置"
+            "settings_input_frame": {
+                "settings_input_labelframe_text": "根據提示輸入參數",
+                "default_x": "砲口X座標：",
+                "default_z": "砲口Z座標：",
+                "default_max_tnt": "單邊最大TNT數量：",
+                "default_tnt_unit": "單個陣列最大TNT數：",
+                "flat": {
+                    "button_text": "平射",
+                    "default_y": "砲口Y座標：",
+                    "zero_TNT_y_motion": "0個TNT下開砲時珍珠初始Y動量：",
+                    "one_TNT_y_motion": "1個TNT下開砲時珍珠初始Y動量：",
+                    "one_TNT_xz_motion": "1個TNT下開砲時珍珠初始XZ動量："
+                },
+                "eject": {
+                    "button_text": "拋射",
+                    "default_y": "砲口Y座標：",
+                    "zero_TNT_y_motion": "0個TNT下開砲時珍珠初始Y動量：",
+                    "one_TNT_y_motion": "1個TNT下開砲時珍珠初始Y動量：",
+                    "one_TNT_xz_motion": "1個TNT下開砲時珍珠初始XZ動量："
+                },
+                "button_preview": "預覽/刷新",
+                "button_check_settings": "查看當前設置",
+                "button_import": "導入設置"
+            },
+            "preview_frame": {
+                "preview_labelframe_text": "結果預覽",
+                "button_confirm": "使用預覽中的結果",
+                "button_export": "導出設置",
+                "preview_text": {
+                    "row_1": "是否具有拋射模式",
+                    "row_2": "單側最大TNT當量",
+                    "row_3": "單個陣列最大TNT數",
+                    "row_4": "砲口初始XZ座標",
+                    "row_5": "平射時，1個TNT賦予珍珠的XZ動量",
+                    "row_6": "平射時，1個TNT賦予珍珠的Y動量(右側兩個Y動量的差)",
+                    "row_7": "平射時，珍珠具有的初始Y動量",
+                    "row_8": "平射時，珍珠在砲口中的位置",
+                    "row_9": "拋射時，1個TNT賦予珍珠的XZ動量",
+                    "row_10": "拋射時，1個TNT賦予珍珠的Y動量(右側兩個Y動量的差)",
+                    "row_11": "拋射時，珍珠具有的初始Y動量",
+                    "row_12": "拋射時，珍珠在砲口中的位置"
+                }
+            }
         },
         "error_frame": {
             "title": "錯誤",

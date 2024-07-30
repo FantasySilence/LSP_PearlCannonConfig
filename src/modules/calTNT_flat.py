@@ -6,7 +6,6 @@
 # =================================== #
 # @Descript: 这个模块用于平射配置       #
 # =================================== #
-import json
 import numpy as np
 import pandas as pd
 from src.common.const import *

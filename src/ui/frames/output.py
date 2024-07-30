@@ -7,13 +7,10 @@
 # @Description: 结果输出页面           #
 # =================================== #
 import json
-import numpy as np
 import pandas as pd
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from src.common.path_utils import *
-from src.modules.pearltrace import PearlPathTracing
-from src.modules.config_transform import ConfigInfoTransform
 
 
 class OutputFrame(ttk.Frame):
@@ -86,34 +83,6 @@ class OutputFrame(ttk.Frame):
             master=self.tnt_frame, textvariable=self.red_TNT_info, font=("宋体", 10)
         )
         red_TNT_label.grid(row=1, column=0, padx=5, pady=5, sticky=W)
-
-    def on_item_selected(self, event) -> None:
-
-        """
-        当Treeview选中某一行时，将选中行的信息返回到用户输入界面
-        """
-
-        # ------ 获取选中行的标识符 ------ #
-        selected_item = self.treeview.focus()
-        
-        # ------ 获取该行的值 ------ #
-        self.item_values = self.treeview.item(selected_item, 'values')
-
-        # ------ 获取选中行的索引 ------ #
-        item_id = self.treeview.selection()[0]
-        self.item_index = self.treeview.index(item_id)
-
-        # ------ 更新TNT详细信息 ------ #
-        blue_TNT, red_TNT = self.item_values[2:4]
-        blue_TNT_str, red_TNT_str = ConfigInfoTransform.translate(
-            int(blue_TNT[:-2]), int(red_TNT[:-2]), settings=self.settings
-        )
-        self.blue_TNT_info.set(
-            self.LANGUAGE[self.lang]["output_frame"]["blue_tnt_label"] + blue_TNT_str
-        )
-        self.red_TNT_info.set(
-            self.LANGUAGE[self.lang]["output_frame"]["red_tnt_label"] + red_TNT_str
-        )
     
     def load_TNT_config(self, config: pd.DataFrame, settings: dict) -> None:
 
@@ -121,169 +90,20 @@ class OutputFrame(ttk.Frame):
         与用户输入进行通信，显示TNT配置信息
         """
 
-        # ------ 获取settings ------ #
-        self.settings = settings
-
-        # ------ 清除原先的TNT详细信息 ------ #
-        self.blue_TNT_info.set(
-            self.LANGUAGE[self.lang]["output_frame"]["blue_tnt_label"]
-        )
-        self.red_TNT_info.set(
-            self.LANGUAGE[self.lang]["output_frame"]["red_tnt_label"]
-        )
-
-        # ------ 清除原先的轨迹信息 ------ #
-        self.item_index = None
-
-        # ------ 彻底清除原先的Treeview ------ #
-        if self.treeview:
-            self.treeview.destroy()
-        if self.trace_treeview:
-            self.trace_treeview.destroy()
-
-        # ------ 表头 ------ #
-        columns=(
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"],
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"],
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_3"],
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_4"],
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_5"],
-        )
-
-        # ------ 创建Treeview ------ #
-        self.treeview = ttk.Treeview(
-            self.treeview_frame, columns=columns, show="headings"
-        )
-        self.treeview.pack(fill=BOTH, expand=YES)
-
-        # ------ 为表头配置函数，点击进行排序 ------ #
-        self.treeview.heading(
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"], 
-            text=self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"], 
-            command=lambda: self.sort_column(
-                self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_1"]
-            )
-        )
-        self.treeview.heading(
-            self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"], 
-            text=self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"], 
-            command=lambda: self.sort_column(
-                self.LANGUAGE[self.lang]["output_frame"]["config_treeview"]["columns_2"]
-            )
-        )
-
-        # ------ 设置列格式，确保对齐等 ------ #
-        for col in columns:
-            self.treeview.heading(col, text=col, anchor=CENTER)
-            self.treeview.column(col, width=140, anchor=CENTER)
-        
-        # ------ 捕捉选中某一行，并绑定功能函数 ------ #
-        self.treeview.bind("<<TreeviewSelect>>", self.on_item_selected)
-
-        # ------ 从配置结果中获取信息 ------ #
-        self.output_dataframe = config[[
-            '距离偏移', '飞行时间', '蓝色TNT数量', '红色TNT数量', 'TNT总数量'
-        ]]
-        self.output_dataframe["距离偏移"] = self.output_dataframe["距离偏移"].map(
-            lambda x: round(x, 8)
-        )
-
-        # ------ 将配置信息插入进先前创建的Treeview ------ #
-        for _, row in self.output_dataframe.iterrows():
-            self.treeview.insert(
-                "", "end", values=(
-                    row["距离偏移"], row["飞行时间"],
-                    row["蓝色TNT数量"], row["红色TNT数量"], row["TNT总数量"]
-                )
-            )
-        
-        # ------ 数据量可能较大，设置一个滚动条 ------ #
-        if self.scrollbar:
-            pass
-        else:
-            self.scrollbar = ttk.Scrollbar(
-                self.treeview, orient="vertical", command=self.treeview.yview
-            )
-            self.scrollbar.pack(side='right', fill='y')
-            self.treeview.configure(yscrollcommand=self.scrollbar.set)
-            self.scrollbar = None
+        from src.ui.interactions.output.tnt_config import show_tnt_config
+        show_tnt_config(self, config, settings)
 
     def load_pearl_trace(
-            self, x0: float, z0: float, direction: str, mode: str, settings: dict
+            self, x0: float, z0: float, direction: str, 
+            mode: str, settings: dict
     ) -> None:
 
         """
         与用户输入进行通信，显示珍珠飞行时每时刻的位置
         """
 
-        # ------ 如果没有选中某个配置 ------ #
-        if self.item_index is None:
-            return
-
-        # ------ 彻底清除原先的Treeview ------ #
-        if self.treeview:
-            self.treeview.destroy()
-        if self.trace_treeview:
-            self.trace_treeview.destroy()
-
-        # ------ 表头 ------ #
-        columns = (
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_1"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_2"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_3"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_4"],
-        )
-
-        # ------ 创建Treeview ------ #
-        self.trace_treeview = ttk.Treeview(
-            self.treeview_frame, columns=columns, show="headings"
-        )
-        self.trace_treeview.pack(fill=BOTH, expand=YES)
-
-        # ------ 设置列格式，确保对齐等 ------ #
-        for col in columns:
-            self.trace_treeview.heading(col, text=col, anchor=CENTER)
-            self.trace_treeview.column(col, width=175, anchor=CENTER)
-        
-        # ------ 清除Treeview中的旧数据 ------ #
-        self.trace_treeview.delete(*self.trace_treeview.get_children())
-
-        # ------ 从选中的结果中获取信息 ------ #
-        res = pd.Series(
-            self.item_values[1: 4], 
-            index=['飞行时间', '蓝色TNT数量', '红色TNT数量']
-        ).astype(float).to_numpy()
-        
-        # ------ 计算珍珠运行轨迹 ------ #
-        trace_info = PearlPathTracing.generate(
-            x0, z0, tnt_num=res[1:], direction=direction, 
-            max_ticks=int(res[0]) + 50, mode=mode, settings=settings
-        )
-        trace_info[["x", "y", "z"]] = np.round(trace_info[["x", "y", "z"]], 6)
-
-        # ------ 将配置信息插入进先前创建的Treeview ------ #
-        for _, row in trace_info.iterrows():
-            self.trace_treeview.insert(
-                "", "end", values=(
-                    row["time"], row["x"], row["y"], row["z"]
-                )
-            )
-        
-        # ------ 将到达目的地的那一条高亮显示 ------ #
-        item_id_highlight = self.trace_treeview.get_children()[int(res[0])]
-        self.trace_treeview.tag_configure("highlight", background="yellow")
-        self.trace_treeview.item(item_id_highlight, tags=("highlight",))
-        
-        # ------ 数据量可能较大，设置一个滚动条 ------ #
-        if self.scrollbar_trace:
-            pass
-        else:
-            self.scrollbar_trace = ttk.Scrollbar(
-                self.trace_treeview, orient="vertical", command=self.trace_treeview.yview
-            )
-            self.scrollbar_trace.pack(side='right', fill='y')
-            self.trace_treeview.configure(yscrollcommand=self.scrollbar_trace.set)
-            self.scrollbar_trace = None
+        from src.ui.interactions.output.pearl_trace import show_pearl_trace
+        show_pearl_trace(self, x0, z0, direction, mode, settings)
 
     def sort_column(self, col_id: str, reverse: bool=False) -> None:
 
@@ -298,71 +118,12 @@ class OutputFrame(ttk.Frame):
         data.sort(reverse=reverse)
         for index, (val, child) in enumerate(data):
             self.treeview.move(child, '', index)
-
+    
     def update_language(self, lang: str) -> None:
 
         """
         更新语言设置
         """
 
-        # ------ 通信，获取语言设置 ------ #
-        self.lang = lang
-
-        # ------ 更新页面标签语言 ------ #
-        self.res_frame.config(
-            text=self.LANGUAGE[lang]["output_frame"]["output_labelframe_text"]
-        )
-
-        # ------ 更新配置结果树状菜单语言 ------ #
-        columns=(
-            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_1"],
-            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_2"],
-            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_3"],
-            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_4"],
-            self.LANGUAGE[lang]["output_frame"]["config_treeview"]["columns_5"],
-        )
-        try:
-            self.treeview.config(columns=columns)
-            for col in columns:
-                self.treeview.heading(col, text=col, anchor=CENTER)
-                self.treeview.column(col, width=159, anchor=CENTER)
-        except Exception:
-            pass
-        
-        # ------ 更新轨迹模拟树状菜单语言 ------ #
-        columns = (
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_1"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_2"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_3"],
-            self.LANGUAGE[self.lang]["output_frame"]["trace_treeview"]["columns_4"],
-        )
-        try:
-            self.trace_treeview.config(columns=columns)
-            for col in columns:
-                self.trace_treeview.heading(col, text=col, anchor=CENTER)
-                self.trace_treeview.column(col, width=198, anchor=CENTER)
-        except Exception:
-            pass
-
-        # ------ 更新TNT数量标签 ------ #
-        if len(self.blue_TNT_info.get().split("：")) == 1:
-            self.blue_TNT_info.set(
-                value=self.LANGUAGE[lang]["output_frame"]["blue_tnt_label"],
-            )
-        # 如果调整语言时，已经存在配置信息
-        else:
-            blue_TNT_str = self.blue_TNT_info.get().split("：")[1]
-            self.blue_TNT_info.set(
-                value=self.LANGUAGE[lang]["output_frame"]["blue_tnt_label"] + blue_TNT_str
-            )
-        
-        if len(self.red_TNT_info.get().split("：")) == 1:
-            self.red_TNT_info.set(
-                value=self.LANGUAGE[lang]["output_frame"]["red_tnt_label"],
-            )
-        # 如果调整语言时，已经存在配置信息
-        else:
-            red_TNT_str = self.red_TNT_info.get().split("：")[1]
-            self.red_TNT_info.set(
-                value=self.LANGUAGE[lang]["output_frame"]["red_tnt_label"] + red_TNT_str
-            )
+        from src.ui.interactions.output.language import update_language_in_output
+        update_language_in_output(self, lang)
