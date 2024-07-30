@@ -34,14 +34,11 @@ def confirm_func(cls) -> None:
         settings_dict = eval(settings)
 
         # ------ 存入设置文件中 ------ #
-        with open(
-            resource_path("resources/settings/settings.json"), 
-            mode="w", encoding="utf-8"
-        ) as f:
-            json.dump(settings_dict, f, ensure_ascii=False, indent=4)
-        
+        save_settings(settings_dict)
+
         # ------ 重启应用，设置生效 ------ #
         python = sys.executable
         os.execl(python, python, *sys.argv)
+        
     except Exception:
         pass

@@ -10,7 +10,7 @@ import json
 import ttkbootstrap as ttk
 from tkinter.font import Font
 from ttkbootstrap.constants import *
-from src.common.filesio import FilesIO
+from src.common.path_utils import resource_path
 from src.ui.frames.previews import PreviewFrame
 from src.common.input_validation import validate_number
 from src.ui.interactions.settings_input.check_settings import check_func
@@ -36,7 +36,8 @@ class AdvancedSettingInput(ttk.Frame):
         # ------ 读取语言设置 ------ #
         self.lang = lang
         with open(
-            FilesIO.getLanguage("languages.json"), mode="r", encoding="utf-8"
+            resource_path("resources/languages/languages.json"), 
+            mode="r", encoding="utf-8"
         ) as f:
             self.LANGUAGE = json.load(f)
 

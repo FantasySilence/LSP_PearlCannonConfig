@@ -9,7 +9,7 @@
 import json
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from src.common.filesio import FilesIO
+from src.common.path_utils import resource_path
 from src.ui.interactions.previews.confirm import confirm_func
 from src.ui.interactions.previews.export_settings import export_func
 
@@ -26,7 +26,8 @@ class PreviewFrame(ttk.Frame):
         # ------ 读取语言设置 ------ #
         self.lang = lang
         with open(
-            FilesIO.getLanguage("languages.json"), mode="r", encoding="utf-8"
+            resource_path("resources/languages/languages.json"), 
+            mode="r", encoding="utf-8"
         ) as f:
             self.LANGUAGE = json.load(f)
 
