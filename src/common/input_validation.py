@@ -13,16 +13,13 @@ def validate_number(x: str) -> bool:
     验证输入的字符是否为数字
     """
 
-    # ------ 确保负数也能正确的识别出来 ------ #
+    # ------ 如果字符串为空，返回 False ------ #
+    if x == "":
+        return False
+    
+    # ------ 尝试将字符串转换为浮点数 ------ # 
     try:
-        str_to_validate = x[1:]
-    except IndexError:
-        str_to_validate = x
-
-    # ------ 判断输入的字符是否满足条件 ------ #
-    if str_to_validate.isdigit():
+        float(x)
         return True
-    elif str_to_validate == "":
-        return True
-    else:
+    except ValueError:
         return False
