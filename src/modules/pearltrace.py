@@ -60,13 +60,13 @@ class PearlPathTracing:
         if mode.lower() == "flat":
             motion = settings["MOTION_FOR_FLAT_FIRE"]["XZ_MOTION"] * direc_matrix.dot(tnt_num)
             x_motion, z_motion = motion[0], motion[1]
-            y_motion =  y_motion = settings["MOTION_FOR_FLAT_FIRE"]["Y_MOTION"] *\
-                                sum(tnt_num) + settings["MOTION_FOR_FLAT_FIRE"]["Y_INIT_MOTION"]
+            y_motion = settings["MOTION_FOR_FLAT_FIRE"]["Y_MOTION"] *\
+                    sum(tnt_num) + settings["MOTION_FOR_FLAT_FIRE"]["Y_INIT_MOTION"]
         if mode.lower() == "eject":
             motion = settings["MOTION_FOR_EJECTIONS"]["XZ_MOTION"] * direc_matrix.dot(tnt_num)
             x_motion, z_motion = motion[0], motion[1]
-            y_motion =  y_motion = settings["MOTION_FOR_EJECTIONS"]["Y_MOTION"] *\
-                                sum(tnt_num) + settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]
+            y_motion = settings["MOTION_FOR_EJECTIONS"]["Y_MOTION"] *\
+                    sum(tnt_num) + settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]
             
         # ------ 计算珍珠途径位置 ------ #
         while tick < max_ticks:
@@ -74,9 +74,9 @@ class PearlPathTracing:
             x = x + x_motion
             y = y + y_motion
             z = z + z_motion
-            x_motion = 0.99 * x_motion
-            y_motion = 0.99 * y_motion - 0.03
-            z_motion = 0.99 * z_motion
+            x_motion = np.float32(0.99) * x_motion
+            y_motion = np.float32(0.99) * y_motion - np.float32(0.03)
+            z_motion = np.float32(0.99) * z_motion
             PearlLocation.append([tick, x, y, z])
 
         # ------ 返回结果 ------ #
