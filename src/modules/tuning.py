@@ -34,5 +34,8 @@ class TNTNumberAdjustment:
             [x + y for x, y in zip(tnt_num_array, comb)] for comb in all_combinations
         ])
 
+        # ------ 去除含有负数的组合 ------ #
+        all_results = all_results[all_results.min(axis=1) >= 0]
+
         # ------ 返回所有可能的结果 ------ #
         return all_results
