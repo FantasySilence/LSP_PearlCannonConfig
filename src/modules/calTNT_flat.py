@@ -82,7 +82,11 @@ class TNTConfigForFlat:
                 # 计算误差
                 error = np.sqrt((xt - x_target) ** 2 + (zt - z_target) ** 2)
                 sub_res.append([error, comb])
-            final_result[tick] = sorted(sub_res, key=lambda x: x[0])[0]
+            
+            try:
+                final_result[tick] = sorted(sub_res, key=lambda x: x[0])[0]
+            except Exception:
+                pass
         
         # ------ 生成输出结果的Dataframe ------ #
         output = pd.DataFrame()

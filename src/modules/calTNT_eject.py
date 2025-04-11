@@ -8,7 +8,6 @@
 # =================================== #
 import numpy as np
 import pandas as pd
-from src.common.const import *
 from src.modules.direction import Directions
 from src.modules.tuning import TNTNumberAdjustment
 
@@ -30,6 +29,9 @@ class TNTConfigForEjection:
         x_target, z_target：目的地坐标
         """
         
+        # ------ 炮口位置 ------ #
+        y_0 = settings["MOTION_FOR_EJECTIONS"]["Y_INIT_POSITION"]
+
         # ------ 判断方向 ------ #
         direction, direc_matrix = Directions.judge(x_target, z_target,  x_0, z_0)
 
@@ -82,13 +84,20 @@ class TNTConfigForEjection:
                             sum(comb) + settings["MOTION_FOR_EJECTIONS"]["Y_INIT_MOTION"]
                 # 计算落点
                 xt = x_0 + 100 * motion[0] * (1 - 0.99 ** tick)
-                yt = MOTION_FOR_EJECTIONS["Y_INIT_POSITION"] + 100 * (y_motion + 3) * (1 - 0.99 ** tick) - 3 * tick
+                yt = y_0 + 100 * (y_motion + 3) * (1 - 0.99 ** tick) - 3 * tick
                 zt = z_0 + 100 * motion[1] * (1 - 0.99 ** tick)
 
                 # 计算误差
                 error = np.sqrt((xt - x_target) ** 2 + (zt - z_target) ** 2)
-                sub_res.append([error, comb])
-            final_result[tick] = sorted(sub_res, key=lambda x: x[0])[0]
+
+                # 存入合适的结果待用
+                if 128 <= yt <= 129:
+                    sub_res.append([error, comb])
+            
+            try:
+                final_result[tick] = sorted(sub_res, key=lambda x: x[0])[0]
+            except Exception:
+                pass
         
         # ------ 生成输出结果的Dataframe ------ #
         output = pd.DataFrame()
