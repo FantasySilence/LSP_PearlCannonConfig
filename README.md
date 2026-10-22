@@ -39,6 +39,8 @@
 
 在应用主界面的右上角可以修改应用的语言，目前支持English，简体中文，繁体中文。如果需要更多语言支持请按照[这份文件](./resources/languages/languages.json)生成语言配置文件。
 
+##### 注意：该计算器暂不支持珍珠更新后的版本
+
 ### 2. 配置算法
 
 详细的配置算法请看[这里](resources/docs/Config.pdf)
